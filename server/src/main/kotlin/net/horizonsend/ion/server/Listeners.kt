@@ -24,6 +24,7 @@ import net.horizonsend.ion.server.listeners.InventoryCloseListener
 import net.horizonsend.ion.server.listeners.InventoryDragListener
 import net.horizonsend.ion.server.listeners.InventoryMoveItemListener
 import net.horizonsend.ion.server.listeners.PlayerAttemptPickupItemListener
+import net.horizonsend.ion.server.listeners.PlayerCommandSendListener
 import net.horizonsend.ion.server.listeners.PlayerDeathListener
 import net.horizonsend.ion.server.listeners.PlayerFishListener
 import net.horizonsend.ion.server.listeners.PlayerItemConsumeListener
@@ -36,6 +37,7 @@ import net.horizonsend.ion.server.listeners.PluginEnableListener
 import net.horizonsend.ion.server.listeners.PotionSplashListener
 import net.horizonsend.ion.server.listeners.PrepareItemCraftListener
 import net.horizonsend.ion.server.listeners.PrepareItemEnchantListener
+import net.horizonsend.ion.server.listeners.ServerTickStartListener
 import net.horizonsend.ion.server.listeners.WorldInitListener
 import net.horizonsend.ion.server.listeners.WorldUnloadListener
 
@@ -50,6 +52,7 @@ val listeners = arrayOf(
 	InventoryDragListener(),
 	InventoryMoveItemListener(),
 	PlayerAttemptPickupItemListener(),
+	PlayerCommandSendListener(),
 	PlayerDeathListener(),
 	PlayerFishListener(),
 	PlayerItemConsumeListener(),
@@ -62,6 +65,7 @@ val listeners = arrayOf(
 	PotionSplashListener(),
 	PrepareItemCraftListener(),
 	PrepareItemEnchantListener(),
+	ServerTickStartListener(),
 	WorldInitListener(),
 	WorldUnloadListener(),
 
