@@ -15,6 +15,7 @@ import net.starlegacy.feature.starship.active.ActiveStarships
 import net.starlegacy.listen
 import net.starlegacy.util.Tasks
 import org.bukkit.Chunk
+import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.event.world.WorldLoadEvent
 import org.bukkit.event.world.WorldUnloadEvent
@@ -63,7 +64,7 @@ object DeactivatedPlayerStarships : SLComponent() {
 			val id = objId<PlayerStarshipData>()
 			val blockKey = BlockPos.asLong(x, y, z)
 			val worldName = world.name
-			val data = PlayerStarshipData(id, captain, type, Ion.configuration.serverName, worldName, blockKey, name = name, subShips = mutableMapOf())
+			val data = PlayerStarshipData(id, captain, type, Ion.configuration.serverName, worldName, blockKey, name = name, subShips = mutableMapOf(), flyableBlocks = FLYABLE_BLOCKS)
 			PlayerStarshipData.add(data)
 			getCache(world).add(data)
 
@@ -111,6 +112,14 @@ object DeactivatedPlayerStarships : SLComponent() {
 
 		Tasks.async {
 			PlayerStarshipData.updateById(data._id, setValue(PlayerStarshipData::isLockEnabled, newValue))
+		}
+	}
+
+	fun updateFlyableBlock(data: PlayerStarshipData, material: Material) {
+		if (!FLYABLE_BLOCKS.contains(material)) return
+		if (data.flyableBlocks.contains(material)) { data.flyableBlocks.remove(material) } else data.flyableBlocks.add(material)
+		Tasks.async {
+			PlayerStarshipData.updateById(data._id, setValue(PlayerStarshipData::flyableBlocks, data.flyableBlocks))
 		}
 	}
 

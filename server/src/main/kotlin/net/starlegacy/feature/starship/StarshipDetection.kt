@@ -212,7 +212,7 @@ object StarshipDetection : SLComponent() {
 
 			// Don't allow blocks that are not flown
 
-			if (!FLYABLE_BLOCKS.contains(material)) {
+			if (!data.flyableBlocks.contains(material)) {
 				continue
 			}
 
@@ -361,7 +361,6 @@ object StarshipDetection : SLComponent() {
 			Material.DISPENSER,
 			Material.BARREL,
 			Material.DROPPER -> true
-
 			else -> false
 		}
 	}

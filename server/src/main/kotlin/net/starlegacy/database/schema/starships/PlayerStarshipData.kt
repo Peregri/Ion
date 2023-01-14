@@ -6,8 +6,10 @@ import net.starlegacy.database.Oid
 import net.starlegacy.database.OidDbObjectCompanion
 import net.starlegacy.database.schema.misc.SLPlayerId
 import net.starlegacy.database.slPlayerId
+import net.starlegacy.feature.starship.FLYABLE_BLOCKS
 import net.starlegacy.feature.starship.StarshipType
 import org.bukkit.Bukkit
+import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.entity.Player
 import org.litote.kmongo.contains
@@ -16,6 +18,7 @@ import org.litote.kmongo.ensureIndex
 import org.litote.kmongo.ensureUniqueIndex
 import org.litote.kmongo.eq
 import org.litote.kmongo.or
+import java.util.EnumSet
 
 /**
  * This can either represent an unpiloted ship, which is stored in database,
@@ -43,7 +46,10 @@ data class PlayerStarshipData(
 	var containedChunks: Set<Long>? = null,
 
 	var lastUsed: Long = System.currentTimeMillis(),
-	var isLockEnabled: Boolean = false
+	var isLockEnabled: Boolean = false,
+
+	/** map of all the blocks the ship can pilot */
+	var flyableBlocks: EnumSet<Material> = FLYABLE_BLOCKS
 ) : DbObject {
 	companion object : OidDbObjectCompanion<PlayerStarshipData>(PlayerStarshipData::class, setup = {
 		ensureIndex(PlayerStarshipData::captain)
@@ -53,6 +59,7 @@ data class PlayerStarshipData(
 		ensureIndex(PlayerStarshipData::serverName)
 		ensureIndex(PlayerStarshipData::levelName)
 		ensureUniqueIndex(PlayerStarshipData::levelName, PlayerStarshipData::blockKey)
+		ensureIndex(PlayerStarshipData::flyableBlocks)
 	}) {
 		const val LOCK_TIME_MS = 1_000 * 300
 
