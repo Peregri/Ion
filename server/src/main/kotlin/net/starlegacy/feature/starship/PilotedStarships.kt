@@ -314,6 +314,6 @@ object PilotedStarships : SLComponent() {
 	}
 
 	fun getDisplayName(data: PlayerStarshipData): String {
-		return data.name ?: data.starshipType.displayName.lowercase(Locale.getDefault())
+		return data.name ?: data.starshipType.displayName.lowercase(Locale.getDefault()).replaceFirstChar { it.uppercase() }
 	}
 }

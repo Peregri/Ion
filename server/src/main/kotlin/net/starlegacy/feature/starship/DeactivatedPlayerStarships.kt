@@ -226,6 +226,10 @@ object DeactivatedPlayerStarships : SLComponent() {
 
 		val carriedShipStateMap = Object2ObjectOpenHashMap<PlayerStarshipData, PlayerStarshipState>()
 
+		for (ship in starship.subShips) {
+			SubCraftData.add(ship.key)
+		}
+
 		val state: PlayerStarshipState = Tasks.getSyncBlocking {
 			// this needs to be removed sync!
 			ActiveStarships.remove(starship)

@@ -25,6 +25,8 @@ fun Location.add(x: Int, y: Int, z: Int): Location = add(x.toDouble(), y.toDoubl
 fun Location.add(trio: Vec3i): Location = add(trio.x.toDouble(), trio.y.toDouble(), trio.z.toDouble())
 fun Location.add(face: BlockFace): Location = add(face.modX, face.modY, face.modZ)
 
+fun Location.toBlockPos(): BlockPos = BlockPos(this.x, this.y, this.z)
+
 fun isValidYLevel(y: Int) = y in 0..Bukkit.getServer().getWorlds()[0].maxHeight
 
 fun distanceSquared(fromX: Double, fromY: Double, fromZ: Double, toX: Double, toY: Double, toZ: Double): Double =
@@ -186,6 +188,8 @@ fun isInside(location: Location, extraChecks: Int): Boolean {
 fun BlockPos.toVector() = Vector(this.x, this.y, this.z)
 
 fun BlockPos.toLocation(world: World?) = Location(world, this.x.toDouble(), this.y.toDouble(), this.z.toDouble())
+
+fun BlockPos.formatted(): String = "${this.x}, ${this.y}, ${this.z}"
 
 fun vectorToBlockFace(vector: Vector, includeVertical: Boolean = false): BlockFace {
 	val x = vector.x

@@ -80,7 +80,7 @@ class DeactivatedShipWorldCache(world: World) {
 					val saveFile = DeactivatedPlayerStarships.getSaveFile(world, data)
 					if (saveFile.exists()) {
 						val result = FileInputStream(saveFile).use {
-							PlayerStarshipState.readFromStream(it)
+							PlayerStarshipState.readFromStream(data.bukkitWorld(), it)
 						}
 						Optional.of(result)
 					} else {

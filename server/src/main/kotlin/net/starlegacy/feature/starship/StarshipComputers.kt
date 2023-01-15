@@ -29,8 +29,8 @@ import net.starlegacy.feature.starship.control.StarshipControl
 import net.starlegacy.feature.starship.event.StarshipComputerOpenMenuEvent
 import net.starlegacy.feature.starship.event.StarshipDetectEvent
 import net.starlegacy.util.MenuHelper
-import net.starlegacy.util.MenuHelper.openPaginatedMenu
 import net.starlegacy.util.Tasks
+import net.starlegacy.util.formatted
 import net.starlegacy.util.toText
 import org.bukkit.Material
 import org.bukkit.World
@@ -182,7 +182,6 @@ object StarshipComputers : SLComponent() {
 				guiButton(Material.NAME_TAG) {
 					player.closeInventory()
 					startRename(playerClicker, data)
-					tryOpenMenu(player, data)
 				}.setName(MiniMessage.miniMessage().deserialize("<gray>Starship Name")),
 				8, 0
 			)
@@ -240,19 +239,22 @@ object StarshipComputers : SLComponent() {
 
 				DeactivatedPlayerStarships.updateState(data, state)
 
-				var hoverMessage = ""
+				player.sendFeedbackActionMessage(SUCCESS, "Re-detected! New size {0}", state.blockMap.size.toText())
 
 				for ((key, blocks) in state.subShipMap) {
 					val craftData = SubCraftData.findByKey(key).first()
-
-					hoverMessage += "${craftData?.name ?: "Sub-Ship"} at ${BlockPos.of(key)}: ${blocks.size.toText()}\n"
+					player.sendFeedbackActionMessage(
+						SUCCESS,
+						"{0} at {1} with {2} blocks.",
+						craftData?.name ?: "Sub-Ship",
+						BlockPos.of(key).formatted(),
+						blocks.size.toText()
+					)
 				}
 
-				player.sendFeedbackActionMessage(SUCCESS, "Re-detected! New size {0}", state.blockMap.size.toText())
 				player.sendFeedbackActionMessage(
 					SUCCESS,
-					"{0}Detected {1} sub-ships",
-					hoverMessage,
+					"Detected {0} sub-ships",
 					state.subShipMap.size
 				)
 			}
@@ -554,11 +556,11 @@ object StarshipComputers : SLComponent() {
 
 		val pilots = mutableSetOf<PlayerData>()
 		for (i in data.pilots) {
-			val playerData = PlayerData[i.uuid]
 			if (playerData != null) {
 				pilots.add(playerData)
 			}
 		}
+
 		player.closeInventory()
 		player.beginConversation(
 			Conversation(

@@ -40,6 +40,7 @@ import net.horizonsend.ion.server.listeners.PrepareItemEnchantListener
 import net.horizonsend.ion.server.listeners.ServerTickStartListener
 import net.horizonsend.ion.server.listeners.WorldInitListener
 import net.horizonsend.ion.server.listeners.WorldUnloadListener
+import net.horizonsend.ion.server.starships.subcraft.SubShipComputers
 
 val listeners = arrayOf(
 	BlockFadeListener(),
@@ -81,5 +82,6 @@ val listeners = arrayOf(
 	LevelUpListener(),
 	MultiblockDetectListener(),
 	ShipKillListener(),
-	StationSiegeBeginListener()
+	StationSiegeBeginListener(),
+	SubShipComputers
 )

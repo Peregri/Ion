@@ -10,7 +10,6 @@ import com.sk89q.worldedit.regions.CuboidRegion
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet
 import net.minecraft.core.BlockPos
-import net.starlegacy.database.schema.starships.SubCraftData
 import net.starlegacy.feature.starship.active.ActiveStarship
 import net.starlegacy.util.Tasks
 import net.starlegacy.util.Vec3i
@@ -18,7 +17,9 @@ import net.starlegacy.util.chunkKey
 import net.starlegacy.util.isTurretComputer
 import net.starlegacy.util.toBukkitBlockData
 import org.bukkit.World
+import org.bukkit.block.BlockFace
 import org.bukkit.block.data.BlockData
+import org.bukkit.block.data.Directional
 import java.io.InputStream
 import java.io.OutputStream
 import kotlin.collections.component1
@@ -108,7 +109,7 @@ data class PlayerStarshipState(
 			return PlayerStarshipState(coveredChunks, blockMap, subShipMap, Vec3i(minX, minY, minZ), Vec3i(maxX, maxY, maxZ))
 		}
 
-		fun readFromStream(stream: InputStream): PlayerStarshipState {
+		fun readFromStream(world: World, stream: InputStream): PlayerStarshipState {
 			val clipboard = BuiltInClipboardFormat.SPONGE_SCHEMATIC.getReader(stream).use { reader: ClipboardReader ->
 				reader.read()
 			}
@@ -117,7 +118,7 @@ data class PlayerStarshipState(
 
 			val blockMap = Long2ObjectOpenHashMap<BlockData>()
 
-			val subShipComputers: MutableSet<Long> = mutableSetOf()
+			val subShipComputers: MutableMap<Long, BlockFace> = mutableMapOf()
 
 			for (vec: BlockVector3 in clipboard.region) {
 				val blockData = clipboard.getBlock(vec).toBukkitBlockData()
@@ -128,7 +129,7 @@ data class PlayerStarshipState(
 				val blockKey = BlockPos.asLong(vec.x, vec.y, vec.z)
 
 				if (blockData.material.isTurretComputer) {
-					subShipComputers += blockKey
+					subShipComputers[blockKey] = (blockData as Directional).facing
 				}
 				blockMap[blockKey] = blockData
 			}
@@ -136,10 +137,7 @@ data class PlayerStarshipState(
 			val subShipMap = mutableMapOf<Long, Long2ObjectOpenHashMap<BlockData>>()
 
 			for (subShip in subShipComputers) {
-				SubCraftData.findByKey(subShip).first()?.let {
-					subShipMap[subShip] =
-						StarshipDetection.detectSubShip(it, blockMap.size)
-				} ?: continue
+				subShipMap[subShip.key] = StarshipDetection.detectSubShip(world, subShip.key, blockMap.size)
 			}
 
 			val chunks = clipboard.region.chunks

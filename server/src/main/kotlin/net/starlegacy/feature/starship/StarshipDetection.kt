@@ -15,6 +15,7 @@ import net.starlegacy.util.isChiseled
 import net.starlegacy.util.isConcrete
 import net.starlegacy.util.isTurretComputer
 import org.bukkit.Material
+import org.bukkit.World
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.Directional
@@ -52,8 +53,10 @@ object StarshipDetection : SLComponent() {
 	}
 	//endregion
 
-	fun detectSubShip(data: SubCraftData, parentSize: Int): Long2ObjectOpenHashMap<BlockData> {
-		val world = data.bukkitWorld()
+	fun detectSubShip(data: SubCraftData, parentSize: Int): Long2ObjectOpenHashMap<BlockData> =
+		detectSubShip(data.bukkitWorld(), data.blockKey, parentSize)
+
+	fun detectSubShip(world: World, blockKey: Long, parentSize: Int): Long2ObjectOpenHashMap<BlockData> {
 		// blocks that were accepted
 		val blockTypes = Long2ObjectOpenHashMap<BlockData>()
 
@@ -66,7 +69,7 @@ object StarshipDetection : SLComponent() {
 		val visited = mutableSetOf<Long>()
 
 		// Jumpstart the queue by adding the origin block
-		val computerKey = data.blockKey
+		val computerKey = blockKey
 		visited.add(computerKey)
 		queue.push(computerKey)
 		var computers = 0
@@ -325,16 +328,7 @@ object StarshipDetection : SLComponent() {
 
 		// Detect SubShips
 		for ((subShip, blockData) in subShips) {
-			SubCraftData.findByKey(subShip).first()?.let { SubCraftData.remove(it._id) }
-
-			val id = objId<SubCraftData>()
-			val facing = (blockData as Directional).facing
-			val subShipData = SubCraftData(id, data._id, data.serverName, data.levelName, subShip, facing, name = null)
-			val mapThingy = detectSubShip(subShipData, size)
-
-			data.subShips[subShipData.blockKey] = LongOpenHashSet(mapThingy.keys)
-			SubCraftData.add(subShipData)
-			subShipMap[subShip] = mapThingy
+			subShipMap[subShip] = createSubShip(subShip, (blockData as Directional).facing, data, size)
 		}
 
 		val coveredChunks = LongOpenHashSet()
@@ -351,6 +345,19 @@ object StarshipDetection : SLComponent() {
 		checkNotNull(maxZ)
 
 		return PlayerStarshipState(coveredChunks, blockTypes, subShipMap, Vec3i(minX, minY, minZ), Vec3i(maxX, maxY, maxZ))
+	}
+
+	fun createSubShip(subShipKey: Long, facing: BlockFace, data: PlayerStarshipData, size: Int) : Long2ObjectOpenHashMap<BlockData> {
+		SubCraftData.findByKey(subShipKey).first()?.let { SubCraftData.remove(it._id) }
+
+		val id = objId<SubCraftData>()
+		val subShipData = SubCraftData(id, data._id, data.serverName, data.levelName, subShipKey, facing, name = null)
+		val mapThingy = detectSubShip(subShipData, size)
+
+		data.subShips[subShipData.blockKey] = LongOpenHashSet(mapThingy.keys)
+		SubCraftData.add(subShipData)
+
+		return detectSubShip(subShipData, size)
 	}
 
 	fun isInventory(material: Material): Boolean {
