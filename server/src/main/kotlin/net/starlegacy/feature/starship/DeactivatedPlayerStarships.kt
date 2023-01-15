@@ -8,6 +8,7 @@ import net.starlegacy.SLComponent
 import net.starlegacy.database.objId
 import net.starlegacy.database.schema.misc.SLPlayerId
 import net.starlegacy.database.schema.starships.PlayerStarshipData
+import net.starlegacy.database.schema.starships.SubCraftData
 import net.starlegacy.database.slPlayerId
 import net.starlegacy.feature.starship.active.ActivePlayerStarship
 import net.starlegacy.feature.starship.active.ActiveStarshipFactory
@@ -104,6 +105,14 @@ object DeactivatedPlayerStarships : SLComponent() {
 
 		Tasks.async {
 			PlayerStarshipData.updateById(data._id, setValue(PlayerStarshipData::name, newName))
+		}
+	}
+
+	fun updateName(data: SubCraftData, newName: String?) {
+		data.name = newName
+
+		Tasks.async {
+			SubCraftData.updateById(data._id, setValue(SubCraftData::name, newName))
 		}
 	}
 
@@ -306,5 +315,28 @@ object DeactivatedPlayerStarships : SLComponent() {
 		cache.remove(data)
 		getSaveFile(world, data).delete()
 		PlayerStarshipData.remove(data._id)
+	}
+
+	fun removeSubShipAsync(data: PlayerStarshipData, subShipData: SubCraftData, callback: () -> Unit = {}): Unit = Tasks.async {
+		synchronized(lock) {
+			removeSubShip(data, subShipData)
+
+			Tasks.sync(callback)
+		}
+	}
+
+	private fun removeSubShip(data: PlayerStarshipData, subShipData: SubCraftData) {
+		require(ActiveStarships[data._id] == null) { "Can't delete an active starship, but tried deleting ${data._id}" }
+
+		data.subShips.remove(subShipData.blockKey)
+
+		val newShips = data.subShips
+		val world: World = data.bukkitWorld()
+		val cache: DeactivatedShipWorldCache = getCache(world)
+
+		cache.remove(data)
+		cache.add(data)
+		SubCraftData.remove(subShipData._id)
+		PlayerStarshipData.updateById(data._id, setValue(PlayerStarshipData::subShips, newShips))
 	}
 }

@@ -347,7 +347,7 @@ object StarshipDetection : SLComponent() {
 		return PlayerStarshipState(coveredChunks, blockTypes, subShipMap, Vec3i(minX, minY, minZ), Vec3i(maxX, maxY, maxZ))
 	}
 
-	fun createSubShip(subShipKey: Long, facing: BlockFace, data: PlayerStarshipData, size: Int) : Long2ObjectOpenHashMap<BlockData> {
+	fun createSubShip(subShipKey: Long, facing: BlockFace, data: PlayerStarshipData, size: Int): Long2ObjectOpenHashMap<BlockData> {
 		SubCraftData.findByKey(subShipKey).first()?.let { SubCraftData.remove(it._id) }
 
 		val id = objId<SubCraftData>()
