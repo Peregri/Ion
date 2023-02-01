@@ -1,7 +1,7 @@
 package net.horizonsend.ion.server.legacy.listeners
 
 import net.horizonsend.ion.server.IonServer
-import net.horizonsend.ion.server.NamespacedKeys
+import net.horizonsend.ion.server.misc.NamespacedKeys
 import net.horizonsend.ion.server.legacy.ores.Ore
 import net.horizonsend.ion.server.legacy.ores.OrePlacementConfig
 import net.horizonsend.ion.server.legacy.utilities.Position

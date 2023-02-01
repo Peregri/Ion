@@ -7,10 +7,12 @@ import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel
 import net.horizonsend.ion.common.database.collections.PlayerData
+import net.horizonsend.ion.common.database.enums.Achievement
 import net.horizonsend.ion.common.database.update
 import net.horizonsend.ion.server.legacy.events.ShipKillEvent
 import net.horizonsend.ion.server.legacy.feedback.FeedbackType
 import net.horizonsend.ion.server.legacy.feedback.sendFeedbackMessage
+import net.horizonsend.ion.server.legacy.utilities.rewardAchievement
 import net.starlegacy.SLComponent
 import net.starlegacy.database.schema.misc.SLPlayer
 import net.starlegacy.database.schema.nations.Nation
@@ -217,14 +219,16 @@ object ShipKillXP : SLComponent() {
 						val assistShip = ActiveStarships.findByPilot(assistPlayer) ?: continue
 						val assistName = assistShip.data.name?.let { getRawDisplayName(assistShip.data) + ", a" } ?: "a"
 
-						assists += "${assistPlayer.name}, piloting $assistName ${assist.first.size} block ${assistShip.type.caseFormatted}\n"
-					}
-
-					embed.addField(MessageEmbed.Field("Assisted by:", assists, false))
+				if (channel == null) {
+					System.err.println("ERROR: No events channel found!")
+					return@async
 				}
-				// End assists
 
-				channel.sendMessageEmbeds(embed.build()).queue()
+				val newShipKillDiscordMessage =
+					"${data.name}, a ${data.size} block ${data.type}, piloted by $killedName, was shot down by " +
+						"${getPlayer(damager.id)!!.name}, piloting $damagerShipName, a ${damager.size} block ${damagerShip.type}."
+
+				channel.sendMessage(newShipKillDiscordMessage).queue()
 			}
 		}
 	}

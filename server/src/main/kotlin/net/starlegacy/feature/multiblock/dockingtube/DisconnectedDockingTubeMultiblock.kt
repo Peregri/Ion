@@ -1,6 +1,6 @@
 package net.starlegacy.feature.multiblock.dockingtube
 
-import net.horizonsend.ion.server.NamespacedKeys
+import net.horizonsend.ion.server.misc.NamespacedKeys
 import net.horizonsend.ion.server.legacy.feedback.FeedbackType
 import net.horizonsend.ion.server.legacy.feedback.sendFeedbackActionMessage
 import net.horizonsend.ion.server.legacy.feedback.sendFeedbackMessage

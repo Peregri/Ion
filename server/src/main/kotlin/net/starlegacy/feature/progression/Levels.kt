@@ -1,6 +1,7 @@
 package net.starlegacy.feature.progression
 
-import net.horizonsend.ion.server.legacy.events.LevelUpEvent
+import net.horizonsend.ion.common.database.enums.Achievement
+import net.horizonsend.ion.server.legacy.utilities.rewardAchievement
 import net.starlegacy.SLComponent
 import net.starlegacy.database.schema.misc.SLPlayer
 import net.starlegacy.sharedDataFolder
@@ -16,7 +17,7 @@ import net.starlegacy.util.msg
 import net.starlegacy.util.title
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -92,7 +93,15 @@ object Levels : SLComponent() {
 				player msg lightPurple("Leveled up to level $newLevel for ${previousCost + cost} SLXP").italic()
 
 				broadcastGlobal("&6&l$name&a&l leveled up to &5&lLevel $newLevel&a&l!")
-				LevelUpEvent(player, level).callEvent()
+				when (level) {
+					10 -> Achievement.LEVEL_10
+					20 -> Achievement.LEVEL_20
+					40 -> Achievement.LEVEL_40
+					80 -> Achievement.LEVEL_80
+					else -> null
+				}?.let {
+					player.rewardAchievement(it)
+				}
 			}
 		}
 
