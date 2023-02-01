@@ -1,4 +1,4 @@
-package net.horizonsend.ion.server.achievements.commands
+package net.horizonsend.ion.server.features.achievements.commands
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.annotation.CommandAlias
@@ -9,11 +9,11 @@ import co.aikar.commands.annotation.Subcommand
 import net.horizonsend.ion.common.database.collections.PlayerData
 import net.horizonsend.ion.common.database.enums.Achievement
 import net.horizonsend.ion.common.database.update
+import net.horizonsend.ion.server.features.achievements.screens.AchievementsScreen
 import net.horizonsend.ion.server.legacy.feedback.FeedbackType
 import net.horizonsend.ion.server.legacy.feedback.sendFeedbackMessage
-import net.horizonsend.ion.server.misc.screens.ScreenManager.openScreen
-import net.horizonsend.ion.server.achievements.screens.AchievementsScreen
 import net.horizonsend.ion.server.legacy.utilities.rewardAchievement
+import net.horizonsend.ion.server.misc.screens.ScreenManager.openScreen
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player

@@ -24,7 +24,6 @@ import net.starlegacy.feature.starship.PilotedStarships.getDisplayName
 import net.starlegacy.feature.starship.active.ActiveStarships
 import net.starlegacy.feature.starship.control.StarshipControl
 import net.starlegacy.feature.starship.event.StarshipComputerOpenMenuEvent
-import net.starlegacy.feature.starship.event.StarshipDetectEvent
 import net.starlegacy.util.MenuHelper
 import net.starlegacy.util.Tasks
 import net.starlegacy.util.toText

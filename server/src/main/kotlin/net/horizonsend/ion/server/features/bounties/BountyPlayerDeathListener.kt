@@ -1,8 +1,8 @@
-package net.horizonsend.ion.server.bounties
+package net.horizonsend.ion.server.features.bounties
 
 import net.horizonsend.ion.common.database.collections.PlayerData
 import net.horizonsend.ion.common.database.update
-import net.horizonsend.ion.server.extensions.sendServerError
+import net.horizonsend.ion.server.misc.extensions.sendServerError
 import net.horizonsend.ion.server.vaultEconomy
 import net.starlegacy.feature.progression.Levels
 import org.bukkit.event.EventHandler
@@ -11,9 +11,8 @@ import org.bukkit.event.entity.PlayerDeathEvent
 
 class BountyPlayerDeathListener : Listener {
 	@Suppress("Unused")
-
 	@EventHandler
-	fun onPlayerDeathEvent(event: PlayerDeathEvent){
+	fun onPlayerDeathEvent(event: PlayerDeathEvent) {
 		val killer = event.entity.killer ?: return // Only player kills
 		val victim = event.player
 		val killerData = PlayerData[killer.uniqueId]

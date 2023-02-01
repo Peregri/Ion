@@ -1,4 +1,4 @@
-package net.horizonsend.ion.server.achievements.screens
+package net.horizonsend.ion.server.features.achievements.screens
 
 import io.papermc.paper.adventure.PaperAdventure
 import net.horizonsend.ion.common.database.collections.PlayerData

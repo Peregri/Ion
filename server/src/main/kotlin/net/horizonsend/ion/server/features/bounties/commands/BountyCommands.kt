@@ -1,4 +1,4 @@
-package net.horizonsend.ion.server.bounties.commands
+package net.horizonsend.ion.server.features.bounties.commands
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.annotation.CommandAlias
@@ -8,10 +8,10 @@ import co.aikar.commands.annotation.Default
 import co.aikar.commands.annotation.Subcommand
 import net.horizonsend.ion.common.database.collections.PlayerData
 import net.horizonsend.ion.common.database.update
-import net.horizonsend.ion.server.extensions.sendServerError
-import net.horizonsend.ion.server.extensions.sendUserError
+import net.horizonsend.ion.server.features.bounties.screens.BountyScreen
+import net.horizonsend.ion.server.misc.extensions.sendServerError
+import net.horizonsend.ion.server.misc.extensions.sendUserError
 import net.horizonsend.ion.server.misc.screens.ScreenManager.openScreen
-import net.horizonsend.ion.server.bounties.screens.BountyScreen
 import net.horizonsend.ion.server.vaultEconomy
 import net.starlegacy.listener.misc.ProtectionListener
 import org.bukkit.command.CommandSender

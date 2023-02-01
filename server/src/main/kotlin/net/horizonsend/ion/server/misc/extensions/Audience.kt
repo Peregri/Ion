@@ -1,4 +1,4 @@
-package net.horizonsend.ion.server.extensions
+package net.horizonsend.ion.server.misc.extensions
 
 import net.horizonsend.ion.server.IonServer.Companion.Ion
 import net.kyori.adventure.audience.Audience

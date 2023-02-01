@@ -1,15 +1,45 @@
-package net.horizonsend.ion.server.achievements.listeners
+package net.horizonsend.ion.server.features.achievements.listeners
 
 import net.horizonsend.ion.common.database.collections.PlayerData
 import net.horizonsend.ion.common.database.enums.Achievement
 import net.horizonsend.ion.server.legacy.events.EnterPlanetEvent
 import net.horizonsend.ion.server.legacy.utilities.rewardAchievement
+import net.starlegacy.feature.misc.CustomItems
+import net.starlegacy.feature.starship.event.StarshipDetectEvent
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.PlayerDeathEvent
+import org.bukkit.event.player.PlayerAttemptPickupItemEvent
 
-@Suppress("Unused")
-class EnterPlanetListener : Listener {
+class AchievementListeners : Listener {
+	@EventHandler
+	fun onPlayerDeathEvent(event: PlayerDeathEvent) {
+		val killer = event.entity.killer ?: return // Only player kills
+		val victim = event.player
+
+		if (killer !== victim) killer.rewardAchievement(Achievement.KILL_PLAYER) // Kill a Player Achievement
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	fun onDetectShip(event: StarshipDetectEvent) {
+		event.player.rewardAchievement(Achievement.DETECT_SHIP)
+	}
+
+	@EventHandler
+	@Suppress("Unused")
+	fun onPlayerAttemptPickupItemEvent(event: PlayerAttemptPickupItemEvent) {
+		event.player.rewardAchievement(
+			when (event.item.itemStack) {
+				CustomItems.MINERAL_TITANIUM.singleItem() -> Achievement.ACQUIRE_TITANIUM
+				CustomItems.MINERAL_ALUMINUM.singleItem() -> Achievement.ACQUIRE_ALUMINIUM
+				CustomItems.MINERAL_CHETHERITE.singleItem() -> Achievement.ACQUIRE_CHETHERITE
+				CustomItems.MINERAL_URANIUM.singleItem() -> Achievement.ACQUIRE_URANIUM
+				else -> return
+			}
+		)
+	}
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	fun onEnterPlanetEvent(event: EnterPlanetEvent) {
 		val playerData = PlayerData[event.player.uniqueId]
