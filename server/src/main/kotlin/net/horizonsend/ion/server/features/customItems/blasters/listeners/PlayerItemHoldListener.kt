@@ -1,7 +1,7 @@
-package net.horizonsend.ion.server.listeners
+package net.horizonsend.ion.server.features.customItems.blasters.listeners
 
-import net.horizonsend.ion.server.items.CustomItems.customItem
-import net.horizonsend.ion.server.items.objects.Blaster
+import net.horizonsend.ion.server.features.customItems.CustomItems.customItem
+import net.horizonsend.ion.server.features.customItems.blasters.objects.Blaster
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.NamedTextColor.RED
 import org.bukkit.event.EventHandler

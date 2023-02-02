@@ -1,4 +1,4 @@
-package net.horizonsend.ion.server.listeners.GamePlayTweaks
+package net.horizonsend.ion.server.listeners.gameplaytweaks
 
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment

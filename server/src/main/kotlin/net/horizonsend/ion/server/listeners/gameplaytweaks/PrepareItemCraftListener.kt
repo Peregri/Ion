@@ -1,8 +1,8 @@
-package net.horizonsend.ion.server.listeners.GamePlayTweaks
+package net.horizonsend.ion.server.listeners.gameplaytweaks
 
-import net.horizonsend.ion.server.items.CustomItems
-import net.horizonsend.ion.server.items.CustomItems.customItem
-import net.horizonsend.ion.server.items.objects.Magazine
+import net.horizonsend.ion.server.features.customItems.CustomItems
+import net.horizonsend.ion.server.features.customItems.CustomItems.customItem
+import net.horizonsend.ion.server.features.customItems.blasters.objects.Magazine
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.PrepareItemCraftEvent

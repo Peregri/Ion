@@ -9,7 +9,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel
 import net.horizonsend.ion.common.database.collections.PlayerData
 import net.horizonsend.ion.common.database.enums.Achievement
 import net.horizonsend.ion.common.database.update
-import net.horizonsend.ion.server.legacy.events.ShipKillEvent
 import net.horizonsend.ion.server.legacy.feedback.FeedbackType
 import net.horizonsend.ion.server.legacy.feedback.sendFeedbackMessage
 import net.horizonsend.ion.server.legacy.utilities.rewardAchievement
@@ -37,7 +36,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.entity.PlayerDeathEvent
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.pow
@@ -154,7 +153,7 @@ object ShipKillXP : SLComponent() {
 			}
 
 			if (points > 0) {
-				ShipKillEvent(getPlayer(killed)!!, getPlayer(damager.id)!!).callEvent()
+				getPlayer(damager.id)?.rewardAchievement(Achievement.KILL_SHIP)
 				PlayerData[damager.id].update {
 					bounty += xp
 				}
@@ -167,7 +166,8 @@ object ShipKillXP : SLComponent() {
 		val killer = descending.first().first; descending.removeFirst()
 		val killerShip = ActiveStarships.findByPassenger(getPlayer(killer.id)!!)!!
 		val killerShipName =
-			(killerShip as? ActivePlayerStarship)?.let { getDisplayName(killerShip.data) } ?: ("a " + killerShip.type.formatted)
+			(killerShip as? ActivePlayerStarship)?.let { getDisplayName(killerShip.data) }
+				?: ("a " + killerShip.type.formatted)
 
 		getServer().sendFeedbackMessage(
 			FeedbackType.ALERT,
@@ -219,16 +219,14 @@ object ShipKillXP : SLComponent() {
 						val assistShip = ActiveStarships.findByPilot(assistPlayer) ?: continue
 						val assistName = assistShip.data.name?.let { getRawDisplayName(assistShip.data) + ", a" } ?: "a"
 
-				if (channel == null) {
-					System.err.println("ERROR: No events channel found!")
-					return@async
+						assists += "${assistPlayer.name}, piloting $assistName ${assist.first.size} block ${assistShip.type.caseFormatted}\n"
+					}
+
+					embed.addField(MessageEmbed.Field("Assisted by:", assists, false))
 				}
+				// End assists
 
-				val newShipKillDiscordMessage =
-					"${data.name}, a ${data.size} block ${data.type}, piloted by $killedName, was shot down by " +
-						"${getPlayer(damager.id)!!.name}, piloting $damagerShipName, a ${damager.size} block ${damagerShip.type}."
-
-				channel.sendMessage(newShipKillDiscordMessage).queue()
+				channel.sendMessageEmbeds(embed.build()).queue()
 			}
 		}
 	}

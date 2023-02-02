@@ -1,4 +1,4 @@
-package net.horizonsend.ion.server.managers
+package net.horizonsend.ion.server.features
 
 import net.horizonsend.ion.server.IonServer.Companion.Ion
 import net.horizonsend.ion.server.legacy.feedback.FeedbackType

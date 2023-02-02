@@ -1,4 +1,4 @@
-package net.horizonsend.ion.server.listeners.EventCancelling
+package net.horizonsend.ion.server.listeners.eventcancelling
 
 import org.bukkit.Material
 import org.bukkit.event.EventHandler

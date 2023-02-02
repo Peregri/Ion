@@ -1,8 +1,8 @@
-package net.horizonsend.ion.server.items.objects
+package net.horizonsend.ion.server.features.customItems.blasters.objects
 
 import net.horizonsend.ion.server.NamespacedKeys.AMMO
 import net.horizonsend.ion.server.NamespacedKeys.CUSTOM_ITEM
-import net.horizonsend.ion.server.items.CustomItem
+import net.horizonsend.ion.server.features.customItems.CustomItem
 import net.kyori.adventure.text.Component
 import net.starlegacy.util.updateMeta
 import org.bukkit.Material

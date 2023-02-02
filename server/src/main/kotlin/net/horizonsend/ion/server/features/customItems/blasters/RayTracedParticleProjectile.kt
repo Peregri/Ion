@@ -1,4 +1,4 @@
-package net.horizonsend.ion.server.projectiles
+package net.horizonsend.ion.server.features.customItems.blasters
 
 import net.horizonsend.ion.server.BalancingConfiguration.EnergyWeapon.ProjectileBalancing
 import net.horizonsend.ion.server.legacy.feedback.FeedbackType

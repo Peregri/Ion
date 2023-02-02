@@ -1,7 +1,6 @@
-package net.horizonsend.ion.server.managers
+package net.horizonsend.ion.server.features.customItems.blasters
 
 import net.horizonsend.ion.server.IonServer
-import net.horizonsend.ion.server.projectiles.RayTracedParticleProjectile
 
 object ProjectileManager {
 	private val rayTracedParticleProjectiles = mutableListOf<RayTracedParticleProjectile>()

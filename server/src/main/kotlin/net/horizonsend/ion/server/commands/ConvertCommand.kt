@@ -4,9 +4,9 @@ import co.aikar.commands.BaseCommand
 import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Subcommand
-import net.horizonsend.ion.server.extensions.sendInformation
-import net.horizonsend.ion.server.extensions.sendUserError
-import net.horizonsend.ion.server.items.CustomItems
+import net.horizonsend.ion.server.features.customItems.CustomItems
+import net.horizonsend.ion.server.misc.extensions.sendInformation
+import net.horizonsend.ion.server.misc.extensions.sendUserError
 import org.bukkit.Material
 import org.bukkit.entity.Player
 

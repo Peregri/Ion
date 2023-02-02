@@ -1,6 +1,6 @@
-package net.horizonsend.ion.server.listeners
+package net.horizonsend.ion.server.features.customItems.blasters.listeners
 
-import net.horizonsend.ion.server.items.CustomItems.customItem
+import net.horizonsend.ion.server.features.customItems.CustomItems.customItem
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener

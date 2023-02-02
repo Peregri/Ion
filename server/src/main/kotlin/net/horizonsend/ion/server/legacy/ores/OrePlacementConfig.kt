@@ -12,9 +12,9 @@ const val algorithmVersion = 10
 
 @Suppress("unused")
 enum class OrePlacementConfig(
-    val groundMaterial: EnumSet<Material> = enumSetOf(),
-    val options: Map<Ore, Int> = mapOf(),
-    val configVersion: Int = 0
+	val groundMaterial: EnumSet<Material> = enumSetOf(),
+	val options: Map<Ore, Int> = mapOf(),
+	val configVersion: Int = 0
 ) {
 	Chandra(
 		enumSetOf(

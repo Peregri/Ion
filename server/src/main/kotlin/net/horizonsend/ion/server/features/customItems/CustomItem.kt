@@ -1,4 +1,4 @@
-package net.horizonsend.ion.server.items
+package net.horizonsend.ion.server.features.customItems
 
 import org.bukkit.entity.LivingEntity
 import org.bukkit.inventory.ItemStack

@@ -1,13 +1,13 @@
-package net.horizonsend.ion.server.items.objects
+package net.horizonsend.ion.server.features.customItems.blasters.objects
 
 import net.horizonsend.ion.common.database.collections.PlayerData
 import net.horizonsend.ion.server.BalancingConfiguration.EnergyWeapon.Balancing
-import net.horizonsend.ion.server.items.CustomItems.STANDARD_MAGAZINE
-import net.horizonsend.ion.server.items.CustomItems.customItem
+import net.horizonsend.ion.server.features.customItems.CustomItems.STANDARD_MAGAZINE
+import net.horizonsend.ion.server.features.customItems.CustomItems.customItem
+import net.horizonsend.ion.server.features.customItems.blasters.ProjectileManager
+import net.horizonsend.ion.server.features.customItems.blasters.RayTracedParticleProjectile
 import net.horizonsend.ion.server.legacy.feedback.FeedbackType
 import net.horizonsend.ion.server.legacy.feedback.sendFeedbackMessage
-import net.horizonsend.ion.server.managers.ProjectileManager
-import net.horizonsend.ion.server.projectiles.RayTracedParticleProjectile
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
