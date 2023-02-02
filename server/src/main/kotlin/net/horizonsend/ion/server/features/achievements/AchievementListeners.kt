@@ -1,4 +1,4 @@
-package net.horizonsend.ion.server.features.achievements.listeners
+package net.horizonsend.ion.server.features.achievements
 
 import net.horizonsend.ion.common.database.collections.PlayerData
 import net.horizonsend.ion.common.database.enums.Achievement

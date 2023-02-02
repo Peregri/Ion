@@ -1,4 +1,4 @@
-package net.horizonsend.ion.server.features.bounties.screens
+package net.horizonsend.ion.server.features.bounties
 
 import net.horizonsend.ion.common.database.collections.PlayerData
 import net.horizonsend.ion.server.legacy.utilities.acceptBounty

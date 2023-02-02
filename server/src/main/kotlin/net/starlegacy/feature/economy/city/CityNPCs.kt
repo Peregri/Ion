@@ -8,7 +8,7 @@ import net.citizensnpcs.api.npc.NPCRegistry
 import net.citizensnpcs.trait.LookClose
 import net.citizensnpcs.trait.SkinTrait
 import net.horizonsend.ion.server.IonServer.Companion.Ion
-import net.horizonsend.ion.server.features.bounties.screens.BountyScreen
+import net.horizonsend.ion.server.features.bounties.BountyScreen
 import net.horizonsend.ion.server.misc.screens.ScreenManager.openScreen
 import net.starlegacy.SLComponent
 import net.starlegacy.database.Oid

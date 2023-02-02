@@ -11,7 +11,7 @@ import net.horizonsend.ion.server.legacy.starshipweapon.multiblock.EnderCrystalS
 import net.horizonsend.ion.server.legacy.starshipweapon.multiblock.MiniPhaserStarshipWeaponMultiblock
 import net.horizonsend.ion.server.legacy.starshipweapon.multiblock.SonicMissileWeaponMultiblock
 import net.horizonsend.ion.server.legacy.utilities.rewardAchievement
-import net.horizonsend.ion.server.misc.NamespacedKeys
+import net.horizonsend.ion.server.NamespacedKeys
 import net.starlegacy.SLComponent
 import net.starlegacy.feature.multiblock.areashield.AreaShield10
 import net.starlegacy.feature.multiblock.areashield.AreaShield20

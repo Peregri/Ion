@@ -1,4 +1,4 @@
-package net.horizonsend.ion.server
+package net.horizonsend.ion.server.misc
 
 import net.horizonsend.ion.server.IonServer.Companion.Ion
 import org.bukkit.Bukkit

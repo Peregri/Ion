@@ -1,4 +1,4 @@
-package net.horizonsend.ion.server.misc
+package net.horizonsend.ion.server
 
 import net.horizonsend.ion.server.IonServer.Companion.Ion
 import org.bukkit.NamespacedKey
