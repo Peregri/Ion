@@ -1,7 +1,7 @@
 package net.horizonsend.ion.server.legacy.listeners
 
 import net.horizonsend.ion.server.IonServer
-import net.horizonsend.ion.server.NamespacedKeys
+import net.horizonsend.ion.server.registrations.Keys
 import net.horizonsend.ion.server.legacy.ores.Ore
 import net.horizonsend.ion.server.legacy.ores.OrePlacementConfig
 import net.horizonsend.ion.server.legacy.utilities.Position
@@ -30,7 +30,7 @@ class ChunkLoadListener(private val plugin: IonServer) : Listener {
 			return
 		}
 
-		val chunkOreVersion = event.chunk.persistentDataContainer.get(NamespacedKeys.ORE_CHECK, PersistentDataType.INTEGER)
+		val chunkOreVersion = event.chunk.persistentDataContainer.get(Keys.ORE_CHECK, PersistentDataType.INTEGER)
 
 		if (chunkOreVersion == placementConfiguration.currentOreVersion) return
 
@@ -100,7 +100,7 @@ class ChunkLoadListener(private val plugin: IonServer) : Listener {
 						println("Updated ores in ${event.chunk.x} ${event.chunk.z} @ ${event.world.name} to version ${placementConfiguration.currentOreVersion} from $chunkOreVersion, ${placedOres.size} ores placed.")
 
 						event.chunk.persistentDataContainer.set(
-							NamespacedKeys.ORE_CHECK,
+							Keys.ORE_CHECK,
 							PersistentDataType.INTEGER,
 							placementConfiguration.currentOreVersion
 						)

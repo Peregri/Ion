@@ -3,7 +3,7 @@ package net.starlegacy.feature.multiblock
 import co.aikar.timings.Timing
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import net.horizonsend.ion.common.database.enums.Achievement
-import net.horizonsend.ion.server.NamespacedKeys
+import net.horizonsend.ion.server.registrations.Keys
 import net.horizonsend.ion.server.legacy.feedback.FeedbackType
 import net.horizonsend.ion.server.legacy.feedback.sendFeedbackMessage
 import net.horizonsend.ion.server.legacy.starshipweapon.multiblock.CthulhuBeamMultiblockBottom
@@ -11,7 +11,7 @@ import net.horizonsend.ion.server.legacy.starshipweapon.multiblock.CthulhuBeamMu
 import net.horizonsend.ion.server.legacy.starshipweapon.multiblock.EnderCrystalStarshipWeaponMultiblockTop
 import net.horizonsend.ion.server.legacy.starshipweapon.multiblock.MiniPhaserStarshipWeaponMultiblock
 import net.horizonsend.ion.server.legacy.starshipweapon.multiblock.SonicMissileWeaponMultiblock
-import net.horizonsend.ion.server.legacy.utilities.rewardAchievement
+import net.horizonsend.ion.server.features.achievements.rewardAchievement
 import net.starlegacy.SLComponent
 import net.starlegacy.feature.multiblock.areashield.AreaShield10
 import net.starlegacy.feature.multiblock.areashield.AreaShield20
@@ -217,7 +217,7 @@ object Multiblocks : SLComponent() {
 	): Multiblock? = gettingTiming.time {
 		val location: Location = sign.location
 
-		val pdc = sign.persistentDataContainer.get(NamespacedKeys.MULTIBLOCK, PersistentDataType.STRING)
+		val pdc = sign.persistentDataContainer.get(Keys.MULTIBLOCK, PersistentDataType.STRING)
 
 		val cached: Multiblock? = multiblockCache[location]
 		if (cached != null) {
@@ -228,7 +228,7 @@ object Multiblocks : SLComponent() {
 			if (matchesSign && (!checkStructure || cached.signMatchesStructure(sign, loadChunks))) {
 				if (pdc == null) {
 					sign.persistentDataContainer.set(
-						NamespacedKeys.MULTIBLOCK,
+						Keys.MULTIBLOCK,
 						PersistentDataType.STRING,
 						cached::class.simpleName!!
 					)
@@ -249,7 +249,7 @@ object Multiblocks : SLComponent() {
 			if (matchesSign && (!checkStructure || multiblock.signMatchesStructure(sign, loadChunks))) {
 				if (pdc == null) {
 					sign.persistentDataContainer.set(
-						NamespacedKeys.MULTIBLOCK,
+						Keys.MULTIBLOCK,
 						PersistentDataType.STRING,
 						multiblock::class.simpleName!!
 					)

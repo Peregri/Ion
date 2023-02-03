@@ -1,7 +1,6 @@
 package net.horizonsend.ion.server.features.bounties
 
 import net.horizonsend.ion.common.database.collections.PlayerData
-import net.horizonsend.ion.server.legacy.utilities.acceptBounty
 import net.horizonsend.ion.server.misc.screens.Screen
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage

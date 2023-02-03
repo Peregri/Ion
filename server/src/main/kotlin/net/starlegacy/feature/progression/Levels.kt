@@ -1,7 +1,7 @@
 package net.starlegacy.feature.progression
 
 import net.horizonsend.ion.common.database.enums.Achievement
-import net.horizonsend.ion.server.legacy.utilities.rewardAchievement
+import net.horizonsend.ion.server.features.achievements.rewardAchievement
 import net.starlegacy.SLComponent
 import net.starlegacy.database.schema.misc.SLPlayer
 import net.starlegacy.sharedDataFolder

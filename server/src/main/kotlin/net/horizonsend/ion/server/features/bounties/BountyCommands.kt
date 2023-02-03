@@ -11,7 +11,7 @@ import net.horizonsend.ion.common.database.update
 import net.horizonsend.ion.server.misc.extensions.sendServerError
 import net.horizonsend.ion.server.misc.extensions.sendUserError
 import net.horizonsend.ion.server.misc.screens.ScreenManager.openScreen
-import net.horizonsend.ion.server.vaultEconomy
+import net.horizonsend.ion.server.registrations.vaultEconomy
 import net.starlegacy.listener.misc.ProtectionListener
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player

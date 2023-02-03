@@ -7,7 +7,7 @@ import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Optional
 import co.aikar.commands.annotation.Subcommand
 import net.horizonsend.ion.common.database.enums.Achievement
-import net.horizonsend.ion.server.legacy.utilities.rewardAchievement
+import net.horizonsend.ion.server.features.achievements.rewardAchievement
 import net.md_5.bungee.api.chat.TextComponent
 import net.starlegacy.cache.nations.NationCache
 import net.starlegacy.cache.nations.PlayerCache

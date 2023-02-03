@@ -4,7 +4,7 @@ import net.horizonsend.ion.common.database.enums.Achievement
 import net.horizonsend.ion.server.legacy.feedback.FeedbackType
 import net.horizonsend.ion.server.legacy.feedback.sendFeedbackAction
 import net.horizonsend.ion.server.legacy.feedback.sendFeedbackMessage
-import net.horizonsend.ion.server.legacy.utilities.rewardAchievement
+import net.horizonsend.ion.server.features.achievements.rewardAchievement
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import net.starlegacy.SLComponent

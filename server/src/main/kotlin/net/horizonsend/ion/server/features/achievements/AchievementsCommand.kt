@@ -1,17 +1,12 @@
 package net.horizonsend.ion.server.features.achievements
 
 import co.aikar.commands.BaseCommand
-import co.aikar.commands.annotation.CommandAlias
-import co.aikar.commands.annotation.CommandCompletion
-import co.aikar.commands.annotation.CommandPermission
-import co.aikar.commands.annotation.Default
-import co.aikar.commands.annotation.Subcommand
+import co.aikar.commands.annotation.*
 import net.horizonsend.ion.common.database.collections.PlayerData
 import net.horizonsend.ion.common.database.enums.Achievement
 import net.horizonsend.ion.common.database.update
 import net.horizonsend.ion.server.legacy.feedback.FeedbackType
 import net.horizonsend.ion.server.legacy.feedback.sendFeedbackMessage
-import net.horizonsend.ion.server.legacy.utilities.rewardAchievement
 import net.horizonsend.ion.server.misc.screens.ScreenManager.openScreen
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender

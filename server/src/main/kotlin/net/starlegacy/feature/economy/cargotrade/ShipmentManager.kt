@@ -4,7 +4,7 @@ import com.github.stefvanschie.inventoryframework.gui.GuiItem
 import net.horizonsend.ion.common.database.enums.Achievement
 import net.horizonsend.ion.server.legacy.feedback.FeedbackType
 import net.horizonsend.ion.server.legacy.feedback.sendFeedbackAction
-import net.horizonsend.ion.server.legacy.utilities.rewardAchievement
+import net.horizonsend.ion.server.features.achievements.rewardAchievement
 import net.starlegacy.SLComponent
 import net.starlegacy.cache.nations.PlayerCache
 import net.starlegacy.cache.trade.CargoCrates

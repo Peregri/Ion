@@ -3,7 +3,6 @@ package net.horizonsend.ion.server.features.achievements
 import net.horizonsend.ion.common.database.collections.PlayerData
 import net.horizonsend.ion.common.database.enums.Achievement
 import net.horizonsend.ion.server.legacy.events.EnterPlanetEvent
-import net.horizonsend.ion.server.legacy.utilities.rewardAchievement
 import net.starlegacy.feature.misc.CustomItems
 import net.starlegacy.feature.starship.event.StarshipDetectEvent
 import org.bukkit.event.EventHandler
@@ -68,7 +67,6 @@ class AchievementListeners : Listener {
 		)
 
 		val achievements = playerData.achievements
-
 		if (achievements.containsAll(
 				listOf(
 						Achievement.PLANET_CHANDRA,

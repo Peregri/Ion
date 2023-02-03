@@ -8,7 +8,7 @@ import net.horizonsend.ion.server.legacy.feedback.FeedbackType.SUCCESS
 import net.horizonsend.ion.server.legacy.feedback.FeedbackType.USER_ERROR
 import net.horizonsend.ion.server.legacy.feedback.sendFeedbackActionMessage
 import net.horizonsend.ion.server.legacy.feedback.sendFeedbackMessage
-import net.horizonsend.ion.server.legacy.utilities.rewardAchievement
+import net.horizonsend.ion.server.features.achievements.rewardAchievement
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage

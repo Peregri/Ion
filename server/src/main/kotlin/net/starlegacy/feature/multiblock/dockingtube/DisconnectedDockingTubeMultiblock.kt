@@ -1,6 +1,6 @@
 package net.starlegacy.feature.multiblock.dockingtube
 
-import net.horizonsend.ion.server.NamespacedKeys
+import net.horizonsend.ion.server.registrations.Keys
 import net.horizonsend.ion.server.legacy.feedback.FeedbackType
 import net.horizonsend.ion.server.legacy.feedback.sendFeedbackActionMessage
 import net.horizonsend.ion.server.legacy.feedback.sendFeedbackMessage
@@ -82,7 +82,7 @@ object DisconnectedDockingTubeMultiblock : DockingTubeMultiblock(
 				player.sendFeedbackActionMessage(FeedbackType.SUCCESS, "Docking tube disconnected.")
 
 				sign.persistentDataContainer.set(
-					NamespacedKeys.MULTIBLOCK,
+					Keys.MULTIBLOCK,
 					PersistentDataType.STRING,
 					ConnectedDockingTubeMultiblock::class.simpleName!!
 				)
