@@ -1,5 +1,6 @@
 package net.horizonsend.ion.server.explosionreversal.listener
 
+import net.horizonsend.ion.server.IonServer
 import net.horizonsend.ion.server.explosionreversal.ExplosionReversalPlugin
 import org.bukkit.entity.Entity
 import org.bukkit.entity.EntityType
@@ -17,7 +18,7 @@ import kotlin.collections.HashMap
 import kotlin.math.roundToLong
 import net.horizonsend.ion.server.explosionreversal.data.ExplodedEntityData as ExplodedEntityData1
 
-class EntityListener(private val plugin: ExplosionReversalPlugin) : Listener {
+class EntityListener(private val plugin: IonServer) : Listener {
     private val pendingDeathEntities = HashMap<UUID, ExplodedEntityData1>()
 
     // put the data in beforehand because some entities such as armor stands lose items before the death event but
@@ -46,8 +47,8 @@ class EntityListener(private val plugin: ExplosionReversalPlugin) : Listener {
 
     @Throws(IOException::class)
     private fun getExplodedEntityData(entity: Entity): ExplodedEntityData1 {
-        val cap = plugin.settings!!.getDistanceDelayCap()
-        val delay = plugin.settings!!.distanceDelay
+        val cap = ExplosionReversalPlugin.settings!!.getDistanceDelayCap()
+        val delay =  ExplosionReversalPlugin.settings!!.distanceDelay
         val time = System.currentTimeMillis() + (cap * delay * 1000L).roundToLong()
         return ExplodedEntityData1(entity, time)
     }
@@ -82,15 +83,15 @@ class EntityListener(private val plugin: ExplosionReversalPlugin) : Listener {
 			getExplodedEntityData(entity)
 		}
         val world = entity.world
-        plugin.worldData!!.addEntity(world, explodedEntityData!!)
+		ExplosionReversalPlugin.worldData!!.addEntity(world, explodedEntityData!!)
     }
 
     private fun isRegeneratedEntity(entity: Entity): Boolean {
         val type = entity.type
-        if (plugin.settings!!.ignoredEntities.contains(type)) {
+        if ( ExplosionReversalPlugin.settings!!.ignoredEntities.contains(type)) {
             return false
         }
-        return if (plugin.settings!!.includedEntities.contains(type)) {
+        return if ( ExplosionReversalPlugin.settings!!.includedEntities.contains(type)) {
             true
         } else when (type) {
             EntityType.ARMOR_STAND, EntityType.PAINTING -> true
@@ -121,7 +122,7 @@ class EntityListener(private val plugin: ExplosionReversalPlugin) : Listener {
         }
         event.isCancelled = true
         val explodedEntityData = getExplodedEntityData(entity)
-        plugin.worldData!!.addEntity(entity.world, explodedEntityData)
+		ExplosionReversalPlugin.worldData!!.addEntity(entity.world, explodedEntityData)
         entity.remove()
     }
 }

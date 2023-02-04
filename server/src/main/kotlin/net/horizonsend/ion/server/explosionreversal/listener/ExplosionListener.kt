@@ -1,5 +1,6 @@
 package net.horizonsend.ion.server.explosionreversal.listener
 
+import net.horizonsend.ion.server.IonServer
 import net.horizonsend.ion.server.explosionreversal.ExplosionReversalPlugin
 import net.horizonsend.ion.server.explosionreversal.data.ExplodedBlockData
 import net.horizonsend.ion.server.explosionreversal.nms.NMSUtils
@@ -20,13 +21,13 @@ import java.io.IOException
 import java.util.LinkedList
 import java.util.Objects
 
-class ExplosionListener(private val plugin: ExplosionReversalPlugin) : Listener {
+class ExplosionListener(private val plugin: IonServer) : Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     @Throws(
         IOException::class
     )
     fun onEntityExplode(event: EntityExplodeEvent) {
-        if (plugin.settings!!.ignoredEntityExplosions.contains(event.entity.type)) {
+        if (ExplosionReversalPlugin.settings!!.ignoredEntityExplosions.contains(event.entity.type)) {
             return
         }
         val world = event.entity.world
@@ -48,7 +49,7 @@ class ExplosionListener(private val plugin: ExplosionReversalPlugin) : Listener 
 
     @Throws(IOException::class)
     private fun processExplosion(world: World, explosionLocation: Location, list: MutableList<Block>) {
-        if (plugin.settings!!.ignoredWorlds.contains(world.name)) {
+        if (ExplosionReversalPlugin.settings!!.ignoredWorlds.contains(world.name)) {
             return
         }
         if (list.isEmpty()) {
@@ -67,7 +68,7 @@ class ExplosionListener(private val plugin: ExplosionReversalPlugin) : Listener 
         if (explodedBlockDataList.isEmpty()) {
             return
         }
-        plugin.worldData!!.addAll(world, explodedBlockDataList)
+		ExplosionReversalPlugin.worldData!!.addAll(world, explodedBlockDataList)
     }
 
     @Throws(IOException::class)
@@ -83,7 +84,7 @@ class ExplosionListener(private val plugin: ExplosionReversalPlugin) : Listener 
         val x = block.x
         val y = block.y
         val z = block.z
-        val explodedTime = plugin.getExplodedTime(eX, eY, eZ, x, y, z)
+        val explodedTime =  ExplosionReversalPlugin.getExplodedTime(eX, eY, eZ, x, y, z)
         val tileEntity = NMSUtils.getTileEntity(block)
         if (tileEntity != null) {
             processTileEntity(explodedBlockDataList, block, explodedTime)
@@ -97,7 +98,7 @@ class ExplosionListener(private val plugin: ExplosionReversalPlugin) : Listener 
     }
 
     private fun ignoreMaterial(material: Material): Boolean {
-        val settings = plugin.settings
+        val settings =  ExplosionReversalPlugin.settings!!
         val includedMaterials = settings!!.includedMaterials
         return material == Material.AIR ||
                 settings.ignoredMaterials.contains(material) || includedMaterials.isNotEmpty() && !includedMaterials.contains(

@@ -1,29 +1,26 @@
 package net.horizonsend.ion.server.explosionreversal
 
+import net.horizonsend.ion.server.IonServer
 import net.horizonsend.ion.server.explosionreversal.Regeneration.pulse
-import net.horizonsend.ion.server.explosionreversal.listener.EntityListener
-import net.horizonsend.ion.server.explosionreversal.listener.ExplosionListener
 import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.world.WorldSaveEvent
-import org.bukkit.plugin.java.JavaPlugin
 import java.io.IOException
 import java.util.function.Consumer
 import kotlin.math.abs
 import kotlin.math.roundToLong
 
-class ExplosionReversalPlugin : JavaPlugin(), Listener {
+object ExplosionReversalPlugin : Listener {
     var settings: Settings? = null
         private set
     var worldData: WorldData? = null
         private set
 
-    override fun onEnable() {
+	fun onEnable() {
         loadConfigAndUpdateDefaults()
         initializeWorldData()
-        registerEvents()
         scheduleRegen()
     }
 
@@ -31,16 +28,9 @@ class ExplosionReversalPlugin : JavaPlugin(), Listener {
         worldData = WorldData()
     }
 
-    private fun registerEvents() {
-        val server = server
-        server.pluginManager.registerEvents(this, this)
-        server.pluginManager.registerEvents(EntityListener(this), this)
-        server.pluginManager.registerEvents(ExplosionListener(this), this)
-    }
-
     private fun scheduleRegen() {
-        val scheduler = server.scheduler
-        scheduler.runTaskTimer(this, Runnable {
+        val scheduler = Bukkit.getServer().scheduler
+        scheduler.runTaskTimer(IonServer.Ion, Runnable {
             try {
                 pulse(this)
             } catch (e: IOException) {
@@ -54,7 +44,7 @@ class ExplosionReversalPlugin : JavaPlugin(), Listener {
         worldData!!.save(event.world)
     }
 
-    override fun onDisable() {
+	fun onDisable() {
         saveAll()
     }
 
@@ -67,8 +57,8 @@ class ExplosionReversalPlugin : JavaPlugin(), Listener {
     }
 
     private fun loadConfigAndUpdateDefaults() {
-        saveDefaultConfig()
-        settings = Settings(config)
+        IonServer.Ion.saveDefaultConfig()
+        settings = Settings(IonServer.Ion.config)
     }
 
     fun getExplodedTime(

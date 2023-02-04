@@ -1,6 +1,8 @@
 package net.horizonsend.ion.server.registrations
 
+import net.horizonsend.ion.server.IonServer
 import net.horizonsend.ion.server.IonServer.Companion.Ion
+import net.horizonsend.ion.server.explosionreversal.listener.ExplosionListener
 import net.horizonsend.ion.server.features.HyperspaceBeaconManager
 import net.horizonsend.ion.server.features.achievements.AchievementListeners
 import net.horizonsend.ion.server.features.blasters.BlasterListeners
@@ -34,5 +36,7 @@ val listeners = arrayOf(
 	BountyListener(),
 
 	// Achievement Listeners
-	AchievementListeners()
+	AchievementListeners(),
+
+	ExplosionListener(Ion)
 )

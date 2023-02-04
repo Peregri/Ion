@@ -4,6 +4,7 @@ import co.aikar.commands.PaperCommandManager
 import net.horizonsend.ion.common.Connectivity
 import net.horizonsend.ion.common.database.enums.Achievement
 import net.horizonsend.ion.common.loadConfiguration
+import net.horizonsend.ion.server.explosionreversal.ExplosionReversalPlugin
 import net.horizonsend.ion.server.features.customItems.CustomItems
 import net.horizonsend.ion.server.features.worlds.IonWorld
 import net.horizonsend.ion.server.registrations.commands
@@ -80,6 +81,7 @@ class IonServer : JavaPlugin() {
 					HyperspaceBeacons.reloadDynmap()
 					Collectors.onEnable()
 					CityNPCs.onEnable()
+					ExplosionReversalPlugin.onEnable()
 
 					pluginManager.registerEvents(CityNPCs, this)
 				},
@@ -95,5 +97,6 @@ class IonServer : JavaPlugin() {
 		IonWorld.unregisterAll()
 		legacyDisable()
 		Connectivity.close()
+		ExplosionReversalPlugin.onDisable()
 	}
 }
