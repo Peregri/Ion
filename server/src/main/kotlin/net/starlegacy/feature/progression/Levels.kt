@@ -17,7 +17,7 @@ import net.starlegacy.util.msg
 import net.starlegacy.util.title
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import java.util.*
+import java.util.UUID
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.max
 import kotlin.math.roundToInt
