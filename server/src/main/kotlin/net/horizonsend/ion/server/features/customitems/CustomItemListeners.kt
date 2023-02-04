@@ -1,6 +1,6 @@
-package net.horizonsend.ion.server.features.customitems
+package net.horizonsend.ion.server.features.customItems
 
-import net.horizonsend.ion.server.features.customitems.CustomItems.customItem
+import net.horizonsend.ion.server.features.customItems.CustomItems.customItem
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -8,7 +8,7 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 
-class CustomItemListeners: Listener {
+class CustomItemListeners : Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	@Suppress("Unused")
 	fun rightClick(event: PlayerInteractEvent) {

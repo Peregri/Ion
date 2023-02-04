@@ -9,7 +9,7 @@ import org.bukkit.event.enchantment.EnchantItemEvent
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent
 import org.bukkit.inventory.ItemStack
 
-class GameplayTweaksListeners: Listener {
+class GameplayTweaksListeners : Listener {
 	@EventHandler
 	@Suppress("Unused")
 	fun onEnchantItemEvent(event: EnchantItemEvent) {

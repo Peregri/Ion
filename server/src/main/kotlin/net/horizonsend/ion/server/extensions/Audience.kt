@@ -2,8 +2,6 @@ package net.horizonsend.ion.server.misc.extensions
 
 import net.horizonsend.ion.server.IonServer.Companion.Ion
 import net.kyori.adventure.audience.Audience
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextColor.color
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.entity.Player

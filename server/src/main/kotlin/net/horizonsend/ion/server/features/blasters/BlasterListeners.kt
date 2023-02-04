@@ -1,9 +1,9 @@
 package net.horizonsend.ion.server.features.blasters
 
-import net.horizonsend.ion.server.features.customitems.CustomItems
-import net.horizonsend.ion.server.features.customitems.CustomItems.customItem
 import net.horizonsend.ion.server.features.blasters.objects.Blaster
 import net.horizonsend.ion.server.features.blasters.objects.Magazine
+import net.horizonsend.ion.server.features.customItems.CustomItems
+import net.horizonsend.ion.server.features.customItems.CustomItems.customItem
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.minimessage.MiniMessage
@@ -31,14 +31,18 @@ class BlasterListeners : Listener {
 		val blaster = customItem.displayName
 		val victimColor =
 			"<#" + Integer.toHexString(
-				(SLPlayer[victim.uniqueId]?.nation?.let { Nation.findById(it) }?.color
-					?: 16777215)
+				(
+					SLPlayer[victim.uniqueId]?.nation?.let { Nation.findById(it) }?.color
+						?: 16777215
+					)
 			) + ">"
 
 		val killerColor =
 			"<#" + Integer.toHexString(
-				(SLPlayer[killer.uniqueId]?.nation?.let { Nation.findById(it) }?.color
-					?: 16777215)
+				(
+					SLPlayer[killer.uniqueId]?.nation?.let { Nation.findById(it) }?.color
+						?: 16777215
+					)
 			) + ">"
 
 		val distance = killer.location.distance(victim.location)

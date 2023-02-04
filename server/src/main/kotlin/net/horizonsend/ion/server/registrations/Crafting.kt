@@ -1,7 +1,7 @@
 package net.horizonsend.ion.server.registrations
 
 import net.horizonsend.ion.server.IonServer.Companion.Ion
-import net.horizonsend.ion.server.features.customitems.CustomItems
+import net.horizonsend.ion.server.features.customItems.CustomItems
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Material.AIR

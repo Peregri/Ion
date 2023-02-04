@@ -4,8 +4,8 @@ import com.sk89q.worldedit.WorldEdit
 import com.sk89q.worldedit.extent.clipboard.Clipboard
 import net.citizensnpcs.api.event.NPCRightClickEvent
 import net.horizonsend.ion.common.database.enums.Achievement
-import net.horizonsend.ion.server.legacy.NewPlayerProtection.hasProtection
 import net.horizonsend.ion.server.features.achievements.rewardAchievement
+import net.horizonsend.ion.server.legacy.NewPlayerProtection.hasProtection
 import net.kyori.adventure.text.minimessage.MiniMessage.miniMessage
 import net.starlegacy.SLComponent
 import net.starlegacy.util.Vec3i

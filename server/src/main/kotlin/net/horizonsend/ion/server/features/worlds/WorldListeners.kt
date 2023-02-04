@@ -7,7 +7,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.world.WorldInitEvent
 import org.bukkit.event.world.WorldUnloadEvent
 
-class WorldListeners: Listener {
+class WorldListeners : Listener {
 	@EventHandler
 	@Suppress("Unused")
 	fun onWorldInitEvent(event: WorldInitEvent) {

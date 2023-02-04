@@ -42,8 +42,9 @@ class CancelListeners : Listener {
 	@EventHandler
 	@Suppress("Unused")
 	fun onBlockFormEvent(event: BlockFormEvent) {
-		if (preventFormBlocks.contains(event.block.type))
+		if (preventFormBlocks.contains(event.block.type)) {
 			event.isCancelled = true
+		}
 	}
 
 	@EventHandler

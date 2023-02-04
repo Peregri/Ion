@@ -1,12 +1,12 @@
 package net.horizonsend.ion.server.registrations
 
 import net.horizonsend.ion.server.commands.ConfigurationCommands
-import net.horizonsend.ion.server.commands.ConvertCommand
-import net.horizonsend.ion.server.commands.CustomItemCommand
-import net.horizonsend.ion.server.commands.SettingsCommand
 import net.horizonsend.ion.server.commands.UtilityCommands
 import net.horizonsend.ion.server.features.achievements.AchievementsCommand
+import net.horizonsend.ion.server.features.blasters.SettingsCommand
 import net.horizonsend.ion.server.features.bounties.BountyCommands
+import net.horizonsend.ion.server.features.customItems.commands.ConvertCommand
+import net.horizonsend.ion.server.features.customItems.commands.CustomItemCommand
 
 val commands = arrayOf(
 	BountyCommands(),

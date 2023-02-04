@@ -1,12 +1,12 @@
-package net.horizonsend.ion.server.features.customitems
+package net.horizonsend.ion.server.features.customItems
 
+import net.horizonsend.ion.server.IonServer.Companion.Ion
+import net.horizonsend.ion.server.features.blasters.objects.Blaster
+import net.horizonsend.ion.server.features.blasters.objects.Magazine
+import net.horizonsend.ion.server.registrations.Keys.CUSTOM_ITEM
 import net.horizonsend.ion.server.registrations.configs.BalancingConfiguration
 import net.horizonsend.ion.server.registrations.configs.BalancingConfiguration.EnergyWeapon.Multishot
 import net.horizonsend.ion.server.registrations.configs.BalancingConfiguration.EnergyWeapon.Singleshot
-import net.horizonsend.ion.server.IonServer.Companion.Ion
-import net.horizonsend.ion.server.registrations.Keys.CUSTOM_ITEM
-import net.horizonsend.ion.server.features.blasters.objects.Blaster
-import net.horizonsend.ion.server.features.blasters.objects.Magazine
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.NamedTextColor.RED
@@ -34,7 +34,7 @@ object CustomItems {
 				material = DIAMOND_HOE,
 				customModelData = 1,
 				displayName = text("Blaster Pistol", RED, BOLD),
-				balancingSupplier = Ion.balancing.energyWeapons::pistol,
+				balancingSupplier = Ion.balancing.energyWeapons::pistol
 			) {}
 		)
 

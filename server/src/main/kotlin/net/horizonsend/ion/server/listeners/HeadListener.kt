@@ -24,8 +24,7 @@ class HeadListener : Listener {
 		if (headDropCooldownEnd > currentTimeMillis()) return
 
 		val head = ItemStack(Material.PLAYER_HEAD)
-		head.editMeta(SkullMeta::class.java)
-		{
+		head.editMeta(SkullMeta::class.java) {
 			it.owningPlayer = victim
 		}
 

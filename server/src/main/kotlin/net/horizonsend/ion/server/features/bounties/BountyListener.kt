@@ -9,7 +9,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
 
-class BountyListeners : Listener {
+class BountyListener : Listener {
 	@Suppress("Unused")
 	@EventHandler
 	fun onPlayerDeathEvent(event: PlayerDeathEvent) {
