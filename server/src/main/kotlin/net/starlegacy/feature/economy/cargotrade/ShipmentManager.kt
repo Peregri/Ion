@@ -120,6 +120,7 @@ object ShipmentManager : SLComponent() {
 	private fun getShipments(territoryId: Oid<Territory>): List<UnclaimedShipment> = shipments[territoryId] ?: listOf()
 
 	fun openShipmentSelectMenu(player: Player, cityInfo: TradeCityData) {
+		if (!cityInfo.type.crates) return
 		MenuHelper.apply {
 			val pane = staticPane(0, 0, 9, 2)
 
@@ -261,6 +262,7 @@ object ShipmentManager : SLComponent() {
 	 * Goes through all crates in inventory and processes them and sells them.
 	 */
 	fun onImport(player: Player, city: TradeCityData) {
+		if (!city.type.crates) return
 		/* a set of all the shipment ids present in the items.
 		* it is a set rather than a list to limit it to one entry per shipment id */
 		val detectedShipments: Set<String> = player.inventory.asSequence().filterNotNull()
@@ -400,9 +402,7 @@ object ShipmentManager : SLComponent() {
 	}
 
 	private fun giveSettlementProfit(playerName: String, city: TradeCityData, tax: Int) {
-		if (city.type != TradeCityType.SETTLEMENT) {
-			return
-		}
+		if (city.type.npc) return
 
 		Tasks.async {
 			val territory: RegionTerritory = Regions[city.territoryId]

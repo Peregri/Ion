@@ -25,6 +25,7 @@ import org.litote.kmongo.and
 import org.litote.kmongo.eq
 import org.litote.kmongo.gte
 import org.litote.kmongo.ne
+import org.litote.kmongo.set
 import java.lang.Integer.min
 
 object NationsMasterTasks {
@@ -152,8 +153,9 @@ object NationsMasterTasks {
 			val isActive = cityState == Settlement.CityState.ACTIVE
 
 			val money = settlementResults[Settlement::balance]
-			val tax = NATIONS_BALANCE.settlement.cityHourlyTax
-			var willBeActive: Boolean = money >= tax
+			val cityType = settlementResults[Settlement::tradeCityType]
+			val tax = cityType?.upkeep?.toInt() ?: continue
+			var willBeActive: Boolean = money >= cityType.upkeep
 
 			val name = settlementResults[Settlement::name]
 			val taxCredits = tax.toCreditsString()
@@ -161,7 +163,7 @@ object NationsMasterTasks {
 			if (willBeActive) {
 				Settlement.withdraw(settlementId, tax)
 
-				if (!isActive) {
+				if (!isActive && cityType.protection) {
 					Notify.online("&2Settlement City $name has paid its hourly tax of $taxCredits, so it's protected!")
 				}
 			} else {
@@ -169,13 +171,16 @@ object NationsMasterTasks {
 					"Until it pays its tax, it does not have settlement city protection."
 				Notify.online(message)
 			}
+			if (!isActive){
+
+			}
 
 			if (willBeActive) {
 				val activeMembers: Long = SLPlayer.count(
 					and(SLPlayer::settlement eq settlementId, SLPlayer::lastSeen gte ACTIVE_AFTER_TIME)
 				)
 
-				if (activeMembers < NATIONS_BALANCE.settlement.cityMinActive) {
+				if (activeMembers < (settlementResults[Settlement::tradeCityType]?.minActive ?: 0)) {
 					Notify.online("&cSettlement city $name paid its tax but didn't have enough active members! It needs at least ${NATIONS_BALANCE.settlement.cityMinActive} for protection.")
 					willBeActive = false
 				}

@@ -7,6 +7,7 @@ import net.starlegacy.database.ensureUniqueIndexCaseInsensitive
 import net.starlegacy.database.none
 import net.starlegacy.database.objId
 import net.starlegacy.database.trx
+import net.starlegacy.feature.economy.city.TradeCityType
 import org.litote.kmongo.and
 import org.litote.kmongo.ensureIndex
 import org.litote.kmongo.ensureUniqueIndex
@@ -39,8 +40,10 @@ data class Territory(
 	var nation: Oid<Nation>? = null,
 	/** The NPC territory owner residing here. */
 	var npcOwner: Oid<NPCTerritoryOwner>? = null,
-	/** If the territory should be a safe-zone from PVP and explosions */
-	var isProtected: Boolean = false
+	/** Trace city Type*/
+	var tradeCityType: TradeCityType? = null,
+	/**Trade city protection*/
+	var isProtected: Boolean? = null
 ) : DbObject {
 	// region dumb stuff
 	// Use all properties for equals, only id for hashcode
@@ -57,7 +60,7 @@ data class Territory(
 		if (settlement != other.settlement) return false
 		if (nation != other.nation) return false
 		if (npcOwner != other.npcOwner) return false
-		if (isProtected != other.isProtected) return false
+		if (tradeCityType != other.tradeCityType) return false
 
 		return true
 	}

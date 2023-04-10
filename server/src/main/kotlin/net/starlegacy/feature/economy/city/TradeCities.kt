@@ -2,6 +2,7 @@ package net.starlegacy.feature.economy.city
 
 import net.starlegacy.SLComponent
 import net.starlegacy.cache.nations.SettlementCache
+import net.starlegacy.command.economy.BazaarCommand.fail
 import net.starlegacy.database.Oid
 import net.starlegacy.database.enumValue
 import net.starlegacy.database.get
@@ -10,6 +11,8 @@ import net.starlegacy.database.oid
 import net.starlegacy.database.schema.nations.NPCTerritoryOwner
 import net.starlegacy.database.schema.nations.Settlement
 import net.starlegacy.database.schema.nations.Territory
+import net.starlegacy.feature.nations.NATIONS_BALANCE
+import net.starlegacy.feature.nations.NationsBalancing
 import net.starlegacy.feature.nations.region.types.RegionTerritory
 import java.util.concurrent.ConcurrentHashMap
 
@@ -17,15 +20,15 @@ object TradeCities : SLComponent() {
 	private val cities: MutableMap<Oid<Territory>, TradeCityData> = ConcurrentHashMap()
 
 	override fun onEnable() {
-		val settlementType = TradeCityType.SETTLEMENT
 		val settlements = SettlementCache.all()
 			.filter { it.cityState == Settlement.CityState.ACTIVE }
 			.associate {
 				it.territory to TradeCityData(
 					it.id,
-					settlementType,
+					it.tradeCityType ?: TradeCityType.SETTLEMENT,
 					it.territory,
-					it.name
+					it.name,
+					NATIONS_BALANCE.settlement.maxTaxPercent
 				)
 			}
 		cities.putAll(settlements)
@@ -38,7 +41,7 @@ object TradeCities : SLComponent() {
 				val newState = it.nullable()?.enumValue<Settlement.CityState>()
 
 				if (newState == Settlement.CityState.ACTIVE) {
-					cities[data.territory] = TradeCityData(data.id, settlementType, data.territory, data.name)
+					cities[data.territory] = TradeCityData(data.id, data.tradeCityType ?: TradeCityType.SETTLEMENT, data.territory, data.name, NATIONS_BALANCE.settlement.maxTaxPercent)
 				} else {
 					cities.remove(data.territory)
 				}
@@ -55,7 +58,8 @@ object TradeCities : SLComponent() {
 				it._id,
 				npcType,
 				it.territory,
-				it.name
+				it.name,
+				NATIONS_BALANCE.settlement.maxTaxPercent
 			)
 		}
 		cities.putAll(npcCities)
@@ -63,7 +67,7 @@ object TradeCities : SLComponent() {
 			val fullDocument = change.fullDocument ?: return@watchInserts
 			cities[fullDocument.territory] =
 				TradeCityData(
-					change.oid, npcType, fullDocument.territory, fullDocument.name
+					change.oid, npcType, fullDocument.territory, fullDocument.name, NATIONS_BALANCE.settlement.maxTaxPercent
 				)
 		}
 		NPCTerritoryOwner.watchDeletes { change ->

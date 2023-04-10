@@ -224,7 +224,7 @@ object Bazaars : SLComponent() {
 
 			val tax = (city.tax * revenue).roundToInt()
 			BazaarItem.depositMoney(item._id, revenue - tax)
-			if (city.type == TradeCityType.SETTLEMENT) {
+			if (!city.type.npc) {
 				Settlement.deposit(city.settlementId, tax)
 			}
 

@@ -14,6 +14,7 @@ import net.starlegacy.database.schema.nations.Settlement
 import net.starlegacy.database.schema.nations.Territory
 import net.starlegacy.database.slPlayerId
 import net.starlegacy.database.string
+import net.starlegacy.feature.economy.city.TradeCityType
 import net.starlegacy.feature.nations.NationsMap
 import net.starlegacy.feature.nations.region.Regions
 import net.starlegacy.util.Tasks
@@ -31,7 +32,8 @@ object SettlementCache : ManualCache() {
 		var nation: Oid<Nation>?,
 		var cityState: Settlement.CityState?,
 		var minBuildAccess: Settlement.ForeignRelation?,
-		var tradeTax: Double? = null
+		var tradeTax: Double? = null,
+		val tradeCityType: TradeCityType? = null
 	)
 
 	private val SETTLEMENT_DATA = ConcurrentHashMap<Oid<Settlement>, SettlementData>()

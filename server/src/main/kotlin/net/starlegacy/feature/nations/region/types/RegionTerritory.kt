@@ -41,7 +41,7 @@ class RegionTerritory(territory: Territory) :
 	var nation: Oid<Nation>? = territory.nation; private set
 	var npcOwner: Oid<NPCTerritoryOwner>? = territory.npcOwner; private set
 	override val children: MutableSet<Region<*>> = ConcurrentHashMap.newKeySet()
-	var isProtected: Boolean = territory.isProtected; private set
+	var isProtected: Boolean = territory.isProtected?:false; private set
 	var polygon: Polygon = unpackTerritoryPolygon(territory.polygonData); private set
 
 	val oldCost

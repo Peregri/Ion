@@ -145,12 +145,7 @@ object ShipmentGenerator : SLComponent() {
 	 */
 	private fun pickDestination(importingCities: List<TradeCityData>): TradeCityData {
 		return getRandomWeighted(
-			importingCities.associate {
-				it to when (it.type) {
-					TradeCityType.SETTLEMENT -> balancing.generator.settlementCityChance
-					TradeCityType.NPC -> balancing.generator.npcCityChance
-				}
-			}
+			importingCities.associate { it to it.type.crateChance }
 		)
 	}
 

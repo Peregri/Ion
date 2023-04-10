@@ -7,6 +7,7 @@ import co.aikar.commands.annotation.Subcommand
 import net.starlegacy.cache.nations.SettlementCache
 import net.starlegacy.command.SLCommand
 import net.starlegacy.database.schema.nations.Settlement
+import net.starlegacy.feature.economy.city.TradeCityType
 import net.starlegacy.util.msg
 import org.bukkit.command.CommandSender
 
@@ -52,5 +53,16 @@ internal object CityManageCommand : SLCommand() {
 
 		Settlement.setCityState(settlementId, state)
 		sender msg "&aChanged state of ${settlementData.name} from ${settlementData.cityState} to $state"
+	}
+
+	@Subcommand("setTier")
+	@CommandCompletion("@settlements @TradeCityTypes")
+	fun onSetTier(sender: CommandSender, settlement: String, tier: TradeCityType){
+		val settlementId = resolveSettlement(settlement)
+		val settlementData = SettlementCache[settlementId]
+
+		failIf(settlementData.cityState == null) { "${settlementData.name} is not a city" }
+
+		Settlement.setTier(settlementId, tier)
 	}
 }

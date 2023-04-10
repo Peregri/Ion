@@ -20,7 +20,7 @@ object NationsBalancing : SLComponent() {
 			val inactivityDays: Int = 30,
 			val minCreateLevel: Int = 3,
 			val renameCost: Int = 1500,
-			val maxTaxPercent: Int = 12
+			val maxTaxPercent: Double = 12.0
 		)
 
 		data class Nations(

@@ -13,7 +13,6 @@ import net.starlegacy.database.uuid
 import net.starlegacy.feature.economy.city.CityNPCs
 import net.starlegacy.feature.economy.city.TradeCities
 import net.starlegacy.feature.economy.city.TradeCityData
-import net.starlegacy.feature.economy.city.TradeCityType
 import net.starlegacy.feature.nations.region.Regions
 import net.starlegacy.feature.nations.region.types.RegionTerritory
 import net.starlegacy.util.Skins
@@ -40,9 +39,9 @@ object CityNpcCommand : SLCommand() {
 			return
 		}
 
-		when (cityData.type) {
-			TradeCityType.NPC -> throw ConditionFailedException("You don't have control over NPC cities!")
-			TradeCityType.SETTLEMENT -> requireSettlementLeader(sender, cityData.settlementId)
+		when (cityData.type.npc) {
+			true -> throw ConditionFailedException("You don't have control over NPC cities!")
+			false-> requireSettlementLeader(sender, cityData.settlementId)
 		}
 	}
 

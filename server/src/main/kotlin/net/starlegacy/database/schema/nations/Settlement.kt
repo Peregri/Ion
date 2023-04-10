@@ -13,6 +13,7 @@ import net.starlegacy.database.schema.misc.SLPlayer
 import net.starlegacy.database.schema.misc.SLPlayerId
 import net.starlegacy.database.trx
 import net.starlegacy.database.updateAll
+import net.starlegacy.feature.economy.city.TradeCityType
 import org.bson.conversions.Bson
 import org.litote.kmongo.addToSet
 import org.litote.kmongo.and
@@ -62,6 +63,8 @@ data class Settlement(
 	var cityState: CityState? = null,
 	/** Lets settlement cities set tax percents on cargo trade and bazaars */
 	var tradeTax: Double? = null,
+
+	var tradeCityType: TradeCityType? = null,
 
 	val needsRefund: Boolean = true
 ) : DbObject, MoneyHolder {
@@ -143,7 +146,7 @@ data class Settlement(
 				// update the territory's settlement
 				Territory.col.updateOne(
 					sess, Territory::settlement eq settlementId,
-					set(Territory::settlement setTo null, Territory::isProtected setTo false)
+					set(Territory::settlement setTo null)
 				)
 
 				// remove/update all the relevant settlement regions
@@ -211,6 +214,16 @@ data class Settlement(
 			Territory.col.updateOne(
 				sess, Territory::settlement eq settlementId,
 				org.litote.kmongo.setValue(Territory::isProtected, protected)
+			)
+		}
+
+		fun setTier(settlementId: Oid<Settlement>, tier: TradeCityType): Unit = trx { sess ->
+			require(exists(sess, settlementId))
+
+			col.updateOneById(sess, settlementId, org.litote.kmongo.setValue(Settlement::tradeCityType, tier))
+			Territory.col.updateOne(
+				sess, Territory::settlement eq settlementId,
+				org.litote.kmongo.setValue(Territory::isProtected, tier.protection)
 			)
 		}
 

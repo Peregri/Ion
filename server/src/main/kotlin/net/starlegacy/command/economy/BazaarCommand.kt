@@ -19,7 +19,6 @@ import net.starlegacy.feature.economy.bazaar.Merchants
 import net.starlegacy.feature.economy.city.CityNPCs
 import net.starlegacy.feature.economy.city.TradeCities
 import net.starlegacy.feature.economy.city.TradeCityData
-import net.starlegacy.feature.economy.city.TradeCityType
 import net.starlegacy.feature.misc.CustomItem
 import net.starlegacy.feature.misc.CustomItems
 import net.starlegacy.feature.nations.gui.playerClicker
@@ -311,7 +310,7 @@ object BazaarCommand : SLCommand() {
 				.append(Component.text(" tax"))
 		)
 
-		if (city.type == TradeCityType.SETTLEMENT) {
+		if (!city.type.npc) {
 			Settlement.deposit(city.settlementId, tax)
 		}
 	}

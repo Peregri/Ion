@@ -10,18 +10,13 @@ data class TradeCityData(
 	val cityOid: Oid<*>,
 	val type: TradeCityType,
 	val territoryId: Oid<Territory>,
-	var displayName: String
+	var displayName: String,
+	val tax: Double
 ) {
 	val settlementId: Oid<Settlement>
 		get() {
-			require(type == TradeCityType.SETTLEMENT)
+			require(!type.npc)
 			@Suppress("UNCHECKED_CAST")
 			return cityOid as Oid<Settlement>
-		}
-
-	val tax: Double
-		get() = when (type) {
-			TradeCityType.NPC -> NATIONS_BALANCE.settlement.maxTaxPercent / 100.0
-			TradeCityType.SETTLEMENT -> SettlementCache[settlementId].tradeTax ?: 0.0
 		}
 }
