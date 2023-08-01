@@ -1,11 +1,9 @@
 package net.horizonsend.ion.server.features.starship.subsystem.weapon.projectile
 
-import net.horizonsend.ion.server.features.starship.controllers.Controller
-import net.horizonsend.ion.server.features.starship.active.ActiveStarship
 import net.horizonsend.ion.server.features.starship.subsystem.weapon.Projectiles
 import net.horizonsend.ion.server.miscellaneous.utils.Tasks
 
-abstract class Projectile(val starship: ActiveStarship?, val shooter: Controller?) {
+abstract class Projectile {
 	open fun fire() {
 		Tasks.syncDelay(0, ::tick)
 	}
