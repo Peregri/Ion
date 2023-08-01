@@ -1,9 +1,8 @@
 package net.horizonsend.ion.server.features.starship.subsystem.weapon.projectile
 
-import net.horizonsend.ion.server.features.starship.controllers.Controller
 import net.horizonsend.ion.server.features.starship.active.ActiveStarship
+import net.horizonsend.ion.server.features.starship.controllers.Controller
 import org.bukkit.Location
-import org.bukkit.entity.Player
 import org.bukkit.util.Vector
 
 abstract class ParticleProjectile(
@@ -12,6 +11,8 @@ abstract class ParticleProjectile(
 	dir: Vector,
 	shooter: Controller?
 ) : SimpleProjectile(starship, loc, dir, shooter) {
+	abstract val thickness: Double
+
 	override fun moveVisually(oldLocation: Location, newLocation: Location, travel: Double) {
 		for (i in 0 until travel.toInt()) {
 			val x = loc.x + dir.x * i

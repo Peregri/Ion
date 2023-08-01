@@ -1,16 +1,16 @@
 package net.horizonsend.ion.server.features.tutorial
 
-import com.destroystokyo.paper.Title
-import net.horizonsend.ion.server.IonServer
+import net.horizonsend.ion.common.extensions.userError
 import net.horizonsend.ion.server.IonServerComponent
 import net.horizonsend.ion.server.features.starship.DeactivatedPlayerStarships
 import net.horizonsend.ion.server.features.starship.PilotedStarships
-import net.horizonsend.ion.server.features.starship.StarshipDestruction
-import net.horizonsend.ion.server.features.starship.event.StarshipRotateEvent
-import net.horizonsend.ion.server.features.starship.event.StarshipStartCruisingEvent
-import net.horizonsend.ion.server.features.starship.event.StarshipTranslateEvent
 import net.horizonsend.ion.server.features.starship.event.StarshipUnpilotEvent
-import net.horizonsend.ion.server.miscellaneous.utils.*
+import net.horizonsend.ion.server.miscellaneous.utils.Tasks
+import net.horizonsend.ion.server.miscellaneous.utils.Vec3i
+import net.horizonsend.ion.server.miscellaneous.utils.execConsoleCmd
+import net.horizonsend.ion.server.miscellaneous.utils.listen
+import net.horizonsend.ion.server.miscellaneous.utils.minecraft
+import net.horizonsend.ion.server.miscellaneous.utils.msg
 import org.bukkit.Bukkit
 import org.bukkit.Chunk
 import org.bukkit.Location
@@ -24,11 +24,9 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.world.ChunkUnloadEvent
-import java.io.File
 import java.lang.ref.WeakReference
 import java.util.UUID
 import kotlin.collections.set
-import kotlin.math.abs
 
 object TutorialManager : IonServerComponent() {
 	private var playersInTutorials = mutableMapOf<Player, TutorialPhase>()
@@ -60,27 +58,27 @@ object TutorialManager : IonServerComponent() {
 			}
 		}
 
-		listen<StarshipRotateEvent> { event ->
-			val player = event.player
-			if (isWorld(player.world) && (getPhase(player) ?: TutorialPhase.LAST) < TutorialPhase.TURN_RIGHT) {
-				event.isCancelled = true
-			}
-		}
-
-		listen<StarshipStartCruisingEvent> { event ->
-			val player = event.player
-			if (isWorld(player.world) && (getPhase(player) ?: TutorialPhase.LAST) < TutorialPhase.CRUISE_START) {
-				event.isCancelled = true
-			}
-		}
-
-		listen<StarshipTranslateEvent> { event ->
-			val player = event.player
-			if (isWorld(player.world) && (getPhase(player) ?: TutorialPhase.LAST) < TutorialPhase.SHIFT_FLY_FORWARD
-			) {
-				event.isCancelled = true
-			}
-		}
+//		listen<StarshipRotateEvent> { event ->
+//			val player = event.player
+//			if (isWorld(player.world) && (getPhase(player) ?: TutorialPhase.LAST) < TutorialPhase.TURN_RIGHT) {
+//				event.isCancelled = true
+//			}
+//		}
+//
+//		listen<StarshipStartCruisingEvent> { event ->
+//			val player = event.player
+//			if (isWorld(player.world) && (getPhase(player) ?: TutorialPhase.LAST) < TutorialPhase.CRUISE_START) {
+//				event.isCancelled = true
+//			}
+//		}
+//
+//		listen<StarshipTranslateEvent> { event ->
+//			val player = event.player
+//			if (isWorld(player.world) && (getPhase(player) ?: TutorialPhase.LAST) < TutorialPhase.SHIFT_FLY_FORWARD
+//			) {
+//				event.isCancelled = true
+//			}
+//		}
 
 		// disable all damage in the world
 		listen<EntityDamageEvent> { event ->
@@ -117,22 +115,24 @@ object TutorialManager : IonServerComponent() {
 				return@listen
 			}
 
-			player msg "&eYou unpiloted your starship, stopping tutorial"
-
-			stop(player)
-
-			StarshipDestruction.vanish(event.starship)
 			event.isCancelled = true
 
-			Tasks.syncDelay(10) {
-				player title Title.builder()
-					.title(red("Tutorial Canceled"))
-					.subtitle(gray("Unpiloted (right clicked computer) before the tutorial end"))
-					.fadeIn(10)
-					.stay(40)
-					.fadeOut(10)
-					.build()
-			}
+			player.userError("Please wait until the intro is over to release your starship")
+//
+//			stop(player)
+//
+//			StarshipDestruction.vanish(event.starship)
+//			event.isCancelled = true
+//
+//			Tasks.syncDelay(10) {
+//				player title Title.builder()
+//					.title(red("Tutorial Canceled"))
+//					.subtitle(gray("Unpiloted (right clicked computer) before the tutorial end"))
+//					.fadeIn(10)
+//					.stay(40)
+//					.fadeOut(10)
+//					.build()
+//			}
 		}
 
 		// if someone places a ship computer in an existing one, overwrite it
@@ -146,7 +146,9 @@ object TutorialManager : IonServerComponent() {
 			}
 		}
 
-// 		TutorialPhase.values().forEach(TutorialPhase::setupHandlers)
+		Tasks.sync {
+			TutorialPhase.values().forEach(TutorialPhase::setupHandlers)
+		}
 	}
 
 	private fun clearChunk(chunkReference: WeakReference<Chunk>) {
@@ -166,8 +168,14 @@ object TutorialManager : IonServerComponent() {
 
 		playersInTutorials[player] = TutorialPhase.FIRST
 
-		val loc: Location = getSafeLocation()
-		loadShip(loc)
+		val loc = Location(
+			Bukkit.getWorld("Tutorial"),
+			0.0,
+			0.0,
+			0.0
+		)
+
+//		loadShip(loc)
 		player.teleport(loc)
 		player.teleport(loc) // teleport a second time, because, well... minecraft
 
@@ -235,25 +243,6 @@ object TutorialManager : IonServerComponent() {
 	}
 
 	private const val distance = 1000
-
-	private fun getSafeLocation(): Location {
-		var x = distance
-		while (getWorld().players.any { abs(it.location.blockX - x) <= distance }) {
-			x += distance
-		}
-		return Location(getWorld(), x.toDouble() + 0.5, (getWorld().maxHeight / 2).toDouble(), 0.5)
-	}
-
-	private fun loadShip(loc: Location) {
-		val file = File(IonServer.dataFolder, "tutorial_ship.schem")
-
-		if (!file.exists()) {
-			error("${file.absolutePath} doesn't exist!")
-		}
-
-		val clipboard = readSchematic(file) ?: error("Failed to read ${file.path}")
-		clipboard.paste(loc.world, loc.blockX, loc.blockY, loc.blockZ)
-	}
 
 	fun isReading(player: Player): Boolean = (readTimes[player.uniqueId] ?: 0L) >= System.currentTimeMillis()
 

@@ -53,6 +53,7 @@ import net.horizonsend.ion.server.command.starship.StarshipDebugCommand
 import net.horizonsend.ion.server.command.starship.StarshipInfoCommand
 import net.horizonsend.ion.server.command.starship.Starships
 import net.horizonsend.ion.server.command.tutorial.TutorialStartStopCommand
+import net.horizonsend.ion.server.command.tutorial.VisualProjectileCommand
 import net.horizonsend.ion.server.configuration.ConfigurationCommands
 import net.horizonsend.ion.server.features.achievements.AchievementsCommand
 import net.horizonsend.ion.server.features.client.whereisit.SearchCommand
@@ -137,5 +138,7 @@ val commands: List<SLCommand> = listOf(
 
 	AchievementsCommand,
 	BlastResistanceCommand,
-	ContactsCommand
+	ContactsCommand,
+
+	VisualProjectileCommand
 )
