@@ -1,18 +1,18 @@
 package net.horizonsend.ion.server.features.tutorial
 
+import net.horizonsend.ion.common.extensions.serverError
 import net.horizonsend.ion.common.extensions.userError
+import net.horizonsend.ion.server.IonServer
 import net.horizonsend.ion.server.IonServerComponent
 import net.horizonsend.ion.server.features.starship.DeactivatedPlayerStarships
 import net.horizonsend.ion.server.features.starship.PilotedStarships
+import net.horizonsend.ion.server.features.starship.StarshipDestruction
 import net.horizonsend.ion.server.features.starship.event.StarshipUnpilotEvent
 import net.horizonsend.ion.server.miscellaneous.utils.Tasks
 import net.horizonsend.ion.server.miscellaneous.utils.Vec3i
 import net.horizonsend.ion.server.miscellaneous.utils.execConsoleCmd
 import net.horizonsend.ion.server.miscellaneous.utils.listen
-import net.horizonsend.ion.server.miscellaneous.utils.minecraft
-import net.horizonsend.ion.server.miscellaneous.utils.msg
 import org.bukkit.Bukkit
-import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
@@ -24,15 +24,19 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.world.ChunkUnloadEvent
-import java.lang.ref.WeakReference
 import java.util.UUID
 import kotlin.collections.set
 
 object TutorialManager : IonServerComponent() {
-	private var playersInTutorials = mutableMapOf<Player, TutorialPhase>()
+	private var playersInTutorials = mutableMapOf<Player, TutorialInstance>()
 	private var readTimes = mutableMapOf<UUID, Long>()
 
 	private const val WORLD_NAME = "Tutorial"
+
+	private const val SEPERATION_DISTANCE = 2000
+	private const val MAX_SEPERATIONS = 4
+
+	private val tutorialOrigin = Vec3i(0, 111, 0)
 
 	private fun getWorld(): World = Bukkit.getWorld(WORLD_NAME) ?: error("Tutorial world not found")
 
@@ -41,11 +45,11 @@ object TutorialManager : IonServerComponent() {
 	override fun onEnable() {
 		listen<PlayerJoinEvent> { event ->
 			val player = event.player
+
 			player.resetTitle()
 			playersInTutorials.remove(player) // who knows...
-			if (isWorld(player.world)) {
-				teleportToStart(player)
-			}
+
+			if (isWorld(player.world)) teleportToStart(player)
 		}
 
 		listen<PlayerQuitEvent> { event ->
@@ -94,24 +98,24 @@ object TutorialManager : IonServerComponent() {
 			}
 
 			val chunk = event.chunk
-			val chunkReference = WeakReference(chunk)
 
 			val datas = DeactivatedPlayerStarships.getInChunk(chunk)
 			if (datas.any()) {
 				log.warn("Deleting " + datas.size + " starship computers in tutorial world")
-				DeactivatedPlayerStarships.destroyManyAsync(datas) {
-					clearChunk(chunkReference)
-				}
 				return@listen
 			}
 
-			clearChunk(chunkReference)
+			Tasks.sync {
+				for (data in datas) {
+					StarshipDestruction.vanish(data)
+				}
+			}
 		}
 
 		listen<StarshipUnpilotEvent>(priority = EventPriority.LOW) { event ->
 			val player = event.player
 
-			if (!isWorld(player.world) || playersInTutorials[player] == TutorialPhase.LAST) {
+			if (!isWorld(player.world) || playersInTutorials[player]?.phase == TutorialPhase.LAST) {
 				return@listen
 			}
 
@@ -151,22 +155,16 @@ object TutorialManager : IonServerComponent() {
 		}
 	}
 
-	private fun clearChunk(chunkReference: WeakReference<Chunk>) {
-		val chunk = chunkReference.get() ?: return
-		val nmsChunk = chunk.minecraft
-// 		val sections = nmsChunk.sections
-		for (it in nmsChunk.blockEntities.keys.toList()) {
-			nmsChunk.level.removeBlockEntity(it)
-		}
-// 		for (i in 0..sections.lastIndex) {
-// 			sections[i] = NMSLevelChunk.EMPTY_CHUNK_SECTION
-// 		}
-	}
-
 	fun start(player: Player) {
 		require(PilotedStarships[player] == null)
 
-		playersInTutorials[player] = TutorialPhase.FIRST
+		try { playersInTutorials[player] = createTutorialInstance(player) } catch (error: NotImplementedError) {
+			for (onlinePlayer in IonServer.server.onlinePlayers) {
+				if (!player.hasPermission("group.helper")) continue
+
+				player.serverError("TUTORIAL FULL!")
+			}
+		}
 
 		val loc = Location(
 			Bukkit.getWorld("Tutorial"),
@@ -185,7 +183,7 @@ object TutorialManager : IonServerComponent() {
 	fun startPhase(player: Player, phase: TutorialPhase) {
 		require(playersInTutorials.containsKey(player))
 
-		playersInTutorials[player] = phase
+		playersInTutorials[player]?.phase = phase
 
 		phase.onStart(player)
 
@@ -215,7 +213,7 @@ object TutorialManager : IonServerComponent() {
 	fun stop(player: Player) {
 		readTimes.remove(player.uniqueId)
 
-		val phase: TutorialPhase? = playersInTutorials.remove(player)
+		val instance: TutorialInstance? = playersInTutorials.remove(player)
 
 		if (!isWorld(player.world)) {
 			return
@@ -224,7 +222,7 @@ object TutorialManager : IonServerComponent() {
 		player.resetTitle()
 
 		Tasks.syncDelay(10) {
-			when (phase) {
+			when (instance?.phase) {
 				TutorialPhase.LAST -> teleportToEnd(player)
 				else -> teleportToStart(player)
 			}
@@ -233,18 +231,54 @@ object TutorialManager : IonServerComponent() {
 		return
 	}
 
+	fun createTutorialInstance(player: Player): TutorialInstance {
+		for (x in -MAX_SEPERATIONS .. MAX_SEPERATIONS) for (z in -MAX_SEPERATIONS .. MAX_SEPERATIONS) {
+			val occupied = playersInTutorials.any { (_, instance) -> instance.xSeperations == x && instance.zSeperations == z }
+
+			if (occupied) continue
+
+			return TutorialInstance(
+				player,
+				x,
+				z,
+				TutorialPhase.FIRST
+			)
+		}
+
+		// tutorial is full
+		throw NotImplementedError()
+	}
+
 	private fun teleportToStart(player: Player) {
 		execConsoleCmd("warp tutorialstart ${player.name}")
 	}
 
 	private fun teleportToEnd(player: Player) {
 		execConsoleCmd("warp tutorialend ${player.name}")
-		player msg "&l&o&cCheck out this tutorial too&8:&b https://youtu.be/AFfDmmpMXQw"
 	}
-
-	private const val distance = 1000
 
 	fun isReading(player: Player): Boolean = (readTimes[player.uniqueId] ?: 0L) >= System.currentTimeMillis()
 
-	fun getPhase(player: Player): TutorialPhase? = playersInTutorials[player]
+	fun getPhase(player: Player): TutorialPhase? = playersInTutorials[player]?.phase
+
+	data class TutorialInstance(
+		val player: Player,
+		val xSeperations: Int,
+		val zSeperations: Int,
+		var phase: TutorialPhase
+	) {
+		fun origin(): Vec3i {
+			val (oldX, y, oldZ) = tutorialOrigin
+
+			val xOffset = xSeperations * SEPERATION_DISTANCE
+			val zOffset = zSeperations * SEPERATION_DISTANCE
+
+			val newX = oldX + xOffset
+			val newZ = oldZ + zOffset
+
+			return Vec3i(newX, y, newZ)
+		}
+	}
+
+
 }

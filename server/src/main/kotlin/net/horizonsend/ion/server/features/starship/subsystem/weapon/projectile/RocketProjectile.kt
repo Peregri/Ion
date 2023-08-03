@@ -1,8 +1,8 @@
 package net.horizonsend.ion.server.features.starship.subsystem.weapon.projectile
 
 import net.horizonsend.ion.server.IonServer
-import net.horizonsend.ion.server.features.starship.controllers.Controller
 import net.horizonsend.ion.server.features.starship.active.ActiveStarship
+import net.horizonsend.ion.server.features.starship.controllers.Controller
 import net.horizonsend.ion.server.miscellaneous.utils.Vec3i
 import org.bukkit.Location
 import org.bukkit.Material
@@ -107,7 +107,6 @@ class RocketProjectile(
 	override val range: Double = IonServer.balancing.starshipWeapons.rocket.range
 	override var speed: Double = IonServer.balancing.starshipWeapons.rocket.speed
 	override val shieldDamageMultiplier: Int = IonServer.balancing.starshipWeapons.rocket.shieldDamageMultiplier
-	override val thickness: Double = IonServer.balancing.starshipWeapons.rocket.thickness
 	override val explosionPower: Float = IonServer.balancing.starshipWeapons.rocket.explosionPower
 	override val volume: Int = IonServer.balancing.starshipWeapons.rocket.volume
 	override val soundName: String = IonServer.balancing.starshipWeapons.rocket.soundName
