@@ -334,7 +334,7 @@ abstract class ActiveStarship(
 		}
 	}
 
-	fun hullIntegrity(): Double {
+	open fun hullIntegrity(): Double {
 		val nonAirBlocks = blocks.count {
 			getBlockTypeSafe(serverLevel, blockKeyX(it), blockKeyY(it), blockKeyZ(it))?.isAir != true
 		}

@@ -20,11 +20,16 @@ import net.horizonsend.ion.server.features.starship.movement.StarshipMovement
 import net.horizonsend.ion.server.features.starship.movement.TranslateMovement
 import net.horizonsend.ion.server.miscellaneous.utils.Tasks
 import net.horizonsend.ion.server.miscellaneous.utils.actualType
+import net.horizonsend.ion.server.miscellaneous.utils.blockKeyX
+import net.horizonsend.ion.server.miscellaneous.utils.blockKeyY
+import net.horizonsend.ion.server.miscellaneous.utils.blockKeyZ
 import net.horizonsend.ion.server.miscellaneous.utils.bukkitWorld
+import net.horizonsend.ion.server.miscellaneous.utils.getBlockTypeSafe
 import net.horizonsend.ion.server.miscellaneous.utils.leftFace
 import net.horizonsend.ion.server.miscellaneous.utils.minecraft
 import net.horizonsend.ion.server.miscellaneous.utils.msg
 import net.horizonsend.ion.server.miscellaneous.utils.rightFace
+import net.horizonsend.ion.server.miscellaneous.utils.subtractFrom
 import net.minecraft.core.BlockPos
 import org.bukkit.Bukkit
 import org.bukkit.Color
@@ -200,6 +205,26 @@ class ActivePlayerStarship(
 			val pilot = this.pilot ?: return
 			pilot.walkSpeed = 0.2f // default
 		}
+	}
+
+	fun getParentBlocks(): LongOpenHashSet {
+		val carriedBlocks = getCarriedBlocks()
+
+		return blocks.subtractFrom(carriedBlocks)
+	}
+
+	fun getCarriedBlocks(): LongOpenHashSet {
+		val carriedBlocks = LongOpenHashSet()
+		carriedShips.flatMapTo(carriedBlocks) { it.value }
+
+		return carriedBlocks
+	}
+
+	override fun hullIntegrity(): Double {
+		val nonAirBlocks = getParentBlocks().count {
+			getBlockTypeSafe(serverLevel, blockKeyX(it), blockKeyY(it), blockKeyZ(it))?.isAir != true
+		}
+		return nonAirBlocks.toDouble() / nonCarriedBlockCount.toDouble()
 	}
 
 	override fun removePassenger(playerID: UUID) {
