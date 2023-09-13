@@ -88,6 +88,8 @@ object SubsystemDetector {
 	}
 
 	private fun detectSign(starship: ActivePlayerStarship, block: Block) {
+		if (carriedShipContains(starship, Vec3i(block.location))) return
+
 		val sign = block.state as Sign
 
 		if (sign.type.isWallSign && sign.getLine(0).lowercase(Locale.getDefault()).contains("node")) {
@@ -146,6 +148,8 @@ object SubsystemDetector {
 	}
 
 	private fun detectThruster(starship: ActivePlayerStarship, block: Block) {
+		if (carriedShipContains(starship, Vec3i(block.location))) return
+
 		for (face in CARDINAL_BLOCK_FACES) {
 			val thrusterType: ThrusterType = ThrusterType.values()
 				.firstOrNull { it.matchesStructure(starship, block.x, block.y, block.z, face) }
@@ -156,6 +160,8 @@ object SubsystemDetector {
 	}
 
 	private fun detectWeapon(starship: ActivePlayerStarship, block: Block) {
+		if (carriedShipContains(starship, Vec3i(block.location))) return
+
 		for (face: BlockFace in CARDINAL_BLOCK_FACES) {
 			val multiblock = getWeaponMultiblock(block, face) ?: continue
 
@@ -228,4 +234,7 @@ object SubsystemDetector {
 		starship.subsystems.filterIsInstanceTo(starship.gravityWells)
 		starship.subsystems.filterIsInstanceTo(starship.drills)
 	}
+
+	fun carriedShipContains(starship: ActivePlayerStarship, location: Vec3i): Boolean =
+		starship.getCarriedBlocks().contains(location.toBlockKey())
 }
