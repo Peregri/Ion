@@ -3,28 +3,29 @@ package net.horizonsend.ion.server.features.starship.active
 import co.aikar.commands.ConditionFailedException
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet
 import net.horizonsend.ion.common.database.Oid
-import java.lang.Math.cbrt
-import java.util.UUID
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.LinkedBlockingQueue
-import java.util.concurrent.TimeUnit
-import net.horizonsend.ion.server.configuration.ServerConfiguration
-import net.horizonsend.ion.server.features.starship.controllers.LegacyController
-import net.horizonsend.ion.server.features.starship.controllers.PlayerController
-import net.minecraft.core.BlockPos
 import net.horizonsend.ion.common.database.cache.nations.NationCache
-import net.horizonsend.ion.server.features.cache.PlayerCache
 import net.horizonsend.ion.common.database.schema.starships.PlayerStarshipData
+import net.horizonsend.ion.server.configuration.ServerConfiguration
+import net.horizonsend.ion.server.features.cache.PlayerCache
 import net.horizonsend.ion.server.features.starship.StarshipType
 import net.horizonsend.ion.server.features.starship.control.StarshipControl
 import net.horizonsend.ion.server.features.starship.control.StarshipCruising
+import net.horizonsend.ion.server.features.starship.controllers.LegacyController
+import net.horizonsend.ion.server.features.starship.controllers.PlayerController
 import net.horizonsend.ion.server.features.starship.event.StarshipMoveEvent
 import net.horizonsend.ion.server.features.starship.event.StarshipRotateEvent
 import net.horizonsend.ion.server.features.starship.event.StarshipTranslateEvent
 import net.horizonsend.ion.server.features.starship.movement.RotationMovement
 import net.horizonsend.ion.server.features.starship.movement.StarshipMovement
 import net.horizonsend.ion.server.features.starship.movement.TranslateMovement
-import net.horizonsend.ion.server.miscellaneous.utils.*
+import net.horizonsend.ion.server.miscellaneous.utils.Tasks
+import net.horizonsend.ion.server.miscellaneous.utils.actualType
+import net.horizonsend.ion.server.miscellaneous.utils.bukkitWorld
+import net.horizonsend.ion.server.miscellaneous.utils.leftFace
+import net.horizonsend.ion.server.miscellaneous.utils.minecraft
+import net.horizonsend.ion.server.miscellaneous.utils.msg
+import net.horizonsend.ion.server.miscellaneous.utils.rightFace
+import net.minecraft.core.BlockPos
 import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Location
@@ -32,6 +33,11 @@ import org.bukkit.block.BlockFace
 import org.bukkit.boss.BossBar
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
+import java.lang.Math.cbrt
+import java.util.UUID
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.TimeUnit
 
 class ActivePlayerStarship(
 	val data: PlayerStarshipData,
@@ -65,6 +71,9 @@ class ActivePlayerStarship(
 	val minutesUnpiloted = if (pilot != null) 0 else TimeUnit.NANOSECONDS.toMinutes(System.nanoTime() - lastUnpilotTime)
 
 	var speedLimit = -1
+
+	val carriedShipsSize = carriedShips.values.sumOf { it.size }
+	val nonCarriedBlockCount = initialBlockCount - carriedShipsSize
 
 	private data class PendingRotation(val clockwise: Boolean)
 
