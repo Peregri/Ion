@@ -77,8 +77,8 @@ class ActivePlayerStarship(
 
 	var speedLimit = -1
 
-	val carriedShipsSize = carriedShips.values.sumOf { it.size }
-	val nonCarriedBlockCount = initialBlockCount - carriedShipsSize
+	val initialCarriedShipsSize: Int = getCarriedBlocks().size
+	val initialNonCarriedBlockCount: Int = getParentBlocks().size
 
 	private data class PendingRotation(val clockwise: Boolean)
 
@@ -210,7 +210,7 @@ class ActivePlayerStarship(
 	fun getParentBlocks(): LongOpenHashSet {
 		val carriedBlocks = getCarriedBlocks()
 
-		return blocks.subtractFrom(carriedBlocks)
+		return blocks.clone().subtractFrom(carriedBlocks)
 	}
 
 	fun getCarriedBlocks(): LongOpenHashSet {
@@ -224,7 +224,7 @@ class ActivePlayerStarship(
 		val nonAirBlocks = getParentBlocks().count {
 			getBlockTypeSafe(serverLevel, blockKeyX(it), blockKeyY(it), blockKeyZ(it))?.isAir != true
 		}
-		return nonAirBlocks.toDouble() / nonCarriedBlockCount.toDouble()
+		return nonAirBlocks.toDouble() / initialNonCarriedBlockCount.toDouble()
 	}
 
 	override fun removePassenger(playerID: UUID) {

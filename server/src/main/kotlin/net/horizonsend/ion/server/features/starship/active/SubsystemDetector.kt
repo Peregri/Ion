@@ -178,6 +178,8 @@ object SubsystemDetector {
 	}
 
 	fun detectLandingGear(starship: ActivePlayerStarship, block: Block) {
+		if (carriedShipContains(starship, Vec3i(block.location))) return
+
 		val matches = LandingGearMultiblock.blockMatchesStructure(block, BlockFace.NORTH)
 
 		if (!matches) return

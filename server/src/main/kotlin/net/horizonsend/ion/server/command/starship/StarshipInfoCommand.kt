@@ -1,14 +1,12 @@
 package net.horizonsend.ion.server.command.starship
 
 import co.aikar.commands.annotation.CommandAlias
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.legacyAmpersand
 import net.horizonsend.ion.server.features.starship.StarshipDetection
-import net.horizonsend.ion.server.features.starship.factory.StarshipFactories
 import net.horizonsend.ion.server.features.starship.hyperspace.Hyperspace
 import net.horizonsend.ion.server.miscellaneous.utils.Vec3i
-import net.horizonsend.ion.server.features.starship.StarshipType
 import net.horizonsend.ion.server.miscellaneous.utils.actualType
 import net.horizonsend.ion.server.miscellaneous.utils.isConcrete
+import net.kyori.adventure.text.minimessage.MiniMessage.miniMessage
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -89,21 +87,17 @@ object StarshipInfoCommand : net.horizonsend.ion.server.command.SLCommand() {
 			p.sendRichMessage("   <gray>Shields:")
 			for (shield in ship.shields) {
 				val percent = createPercent(shield.power, shield.maxPower)
-				val shieldClass = shield.multiblock.signText[3]?.let { legacyAmpersand().serialize(it) }
-				p.sendRichMessage("      <gray>${shield.name}: <aqua>$percent ($shieldClass)")
+				val shieldClass = shield.multiblock.signText[3]?.let { miniMessage().serialize(it) }
+				p.sendRichMessage("      <white>${shield.name}: <aqua>$percent ($shieldClass)")
 			}
 			p.sendRichMessage("   <gray>Shield Regen Efficiency: <aqua>${ship.shieldEfficiency}")
 			p.sendRichMessage("   <gray>Maximum Shields the starship can handle: <aqua>${ship.maxShields}")
 		}
 
 		p.sendRichMessage("   <gray>Hull Integrity: <white>${ship.hullIntegrity().times(100).roundToInt()}%")
+		p.sendRichMessage("   <gray>Non-Carried Ships Block Count: <white>${ship.getParentBlocks().size}")
+		p.sendRichMessage("   <gray>Carried Ships Block Count: <white>${ship.getCarriedBlocks().size}")
 		p.sendRichMessage("   <gray>Center of Mass: <white>${ship.centerOfMassVec3i}")
-
-		val worth = blocks.values
-			.sumOf { StarshipFactories.getPrice(it.blockData) ?: 0.0 }
-			.roundToInt()
-
-		p.sendRichMessage("   <gray>Worth: <white>~$worth")
 	}
 
 	// creates a percent that goes down to the tens place
