@@ -28,7 +28,8 @@ enum class StarshipType(
 	val eventship: Boolean = false,
 	val poweroverrider: Double = 1.0,
 	val maxMiningLasers: Int = 0,
-	val miningLaserTier: Int = 0
+	val miningLaserTier: Int = 0,
+	val maxCarriedPercentage: Double = 0.0
 ) {
 	SPEEDER(
 		displayName = "Speeder",

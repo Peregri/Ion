@@ -6,6 +6,8 @@ import net.horizonsend.ion.common.database.objId
 import net.horizonsend.ion.common.database.schema.misc.SLPlayerId
 import net.horizonsend.ion.common.database.schema.starships.PlayerStarshipData
 import net.horizonsend.ion.common.database.slPlayerId
+import net.horizonsend.ion.common.extensions.serverError
+import net.horizonsend.ion.common.extensions.userError
 import net.horizonsend.ion.server.IonServer
 import net.horizonsend.ion.server.IonServerComponent
 import net.horizonsend.ion.server.features.starship.active.ActivePlayerStarship
@@ -13,6 +15,7 @@ import net.horizonsend.ion.server.features.starship.active.ActiveStarshipFactory
 import net.horizonsend.ion.server.features.starship.active.ActiveStarships
 import net.horizonsend.ion.server.features.starship.subsystem.LandingGearSubsystem
 import net.horizonsend.ion.server.miscellaneous.utils.Tasks
+import net.horizonsend.ion.server.miscellaneous.utils.actualType
 import net.horizonsend.ion.server.miscellaneous.utils.blockKey
 import net.horizonsend.ion.server.miscellaneous.utils.bukkitWorld
 import net.horizonsend.ion.server.miscellaneous.utils.listen
@@ -180,6 +183,7 @@ object DeactivatedPlayerStarships : IonServerComponent() {
 			val cache: DeactivatedShipWorldCache = getCache(world)
 
 			if (cache[data.blockKey] != data) {
+				feedbackDestination.serverError("Could not activate starship, please try again.")
 				return@async // probably already piloted bc they spam clicked
 			}
 
@@ -189,9 +193,28 @@ object DeactivatedPlayerStarships : IonServerComponent() {
 
 			val carriedShipMap = captureCarriedShips(carriedShips, cache)
 
+			val size = state.blockMap.size
+			val carriedShipBlocks = carriedShipMap.flatMap { it.value }
+			val type = data.starshipType.actualType
+
+			if ((carriedShipBlocks.size / size) > type.maxCarriedPercentage) {
+				val maxCarriedBlocks = size * type.maxCarriedPercentage
+
+				feedbackDestination.userError(
+					"This starship can only support carrying ${type.maxCarriedPercentage} percent of its block count. " +
+						"Current amount: ${carriedShipBlocks.size}, max amount: $maxCarriedBlocks"
+				)
+				return@async
+			}
+
 			Tasks.sync {
-				val starship =
-					ActiveStarshipFactory.createPlayerStarship(feedbackDestination, data, state.blockMap.keys, carriedShipMap) ?: return@sync
+				val starship = ActiveStarshipFactory.createPlayerStarship(
+					feedbackDestination,
+					data,
+					state.blockMap.keys,
+					carriedShipMap
+				) ?: return@sync feedbackDestination.serverError("Could not activate starship, please try again.")
+
 				ActiveStarships.add(starship)
 				callback.invoke(starship)
 			}
