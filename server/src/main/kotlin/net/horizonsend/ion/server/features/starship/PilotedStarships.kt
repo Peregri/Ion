@@ -234,25 +234,22 @@ object PilotedStarships : IonServerComponent() {
 			if (blockData.material != foundData.material) {
 				val expected: String = blockData.material.name
 				val found: String = foundData.material.name
-				player.userError(
-					"Block at $x, $y, $z does not match! Expected $expected but found $found"
-				)
+
+				player.userError("Block at $x, $y, $z does not match! Expected $expected but found $found")
 				return false
 			}
 
 			if (foundData.material == StarshipComputers.COMPUTER_TYPE) {
 				if (ActiveStarships.getByComputerLocation(world, x, y, z) != null) {
-					player.userError(
-						"Block at $x, $y, $z is the computer of a piloted ship!"
-					)
+
+					player.userError("Block at $x, $y, $z is the computer of a piloted ship!")
 					return false
 				}
 
 				DeactivatedPlayerStarships[world, x, y, z]?.takeIf { it._id != data._id }?.also { carried ->
 					if (!carried.isPilot(player)) {
-						player.userError(
-							"Block at $x $y $z is a ship computer which you are not a pilot of!"
-						)
+
+						player.userError("Block at $x $y $z is a ship computer which you are not a pilot of!")
 						return false
 					}
 

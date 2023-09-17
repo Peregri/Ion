@@ -183,7 +183,7 @@ object DeactivatedPlayerStarships : IonServerComponent() {
 			val cache: DeactivatedShipWorldCache = getCache(world)
 
 			if (cache[data.blockKey] != data) {
-				feedbackDestination.serverError("Could not activate starship, please try again.")
+				feedbackDestination.serverError("Could not activate starship due to a cache issue, please try again.")
 				return@async // probably already piloted bc they spam clicked
 			}
 
@@ -197,7 +197,7 @@ object DeactivatedPlayerStarships : IonServerComponent() {
 			val carriedShipBlocks = carriedShipMap.flatMap { it.value }
 			val type = data.starshipType.actualType
 
-			if ((carriedShipBlocks.size / size) > type.maxCarriedPercentage) {
+			if (carriedShipBlocks.isNotEmpty() && (carriedShipBlocks.size / size) > type.maxCarriedPercentage) {
 				val maxCarriedBlocks = size * type.maxCarriedPercentage
 
 				feedbackDestination.userError(

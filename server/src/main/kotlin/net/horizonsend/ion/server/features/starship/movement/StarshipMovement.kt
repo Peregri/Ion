@@ -32,7 +32,6 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
 import org.litote.kmongo.setValue
-import kotlin.collections.set
 import kotlin.math.sqrt
 
 abstract class StarshipMovement(val starship: ActiveStarship, val newWorld: World? = null) {
@@ -193,13 +192,17 @@ abstract class StarshipMovement(val starship: ActiveStarship, val newWorld: Worl
 			return
 		}
 
-		for (data: PlayerStarshipData in playerShip.carriedShips.keys) {
+		for ((data: PlayerStarshipData, blocks: LongOpenHashSet) in playerShip.carriedShips) {
 			data.blockKey = displacedKey(data.blockKey)
 			data.levelName = world2.name
 
-			val blocks = playerShip.carriedShips[data] ?: continue // the rest is only for the carried ships
-			playerShip.carriedShips[data] = blocks.mapTo(LongOpenHashSet(blocks.size)) { key: Long ->
-				displacedKey(key)
+			val iterator = blocks.iterator()
+
+			while (iterator.hasNext()) {
+				val key = iterator.nextLong()
+
+				blocks.remove(key)
+				blocks.add(displacedKey(key))
 			}
 		}
 	}
