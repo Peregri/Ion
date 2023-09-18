@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit
 object SpaceMechanics : IonServerComponent() {
 	override fun onEnable() {
 		Tasks.syncRepeat(10, 10) { doSpaceFloating() }
-		Tasks.syncRepeat(20, 20) { playWarningToPlayersNearStars() }
+//		Tasks.syncRepeat(20, 20) { playWarningToPlayersNearStars() }
 
 		listen<ItemSpawnEvent> { event ->
 			val entity = event.entity
@@ -171,7 +171,7 @@ object SpaceMechanics : IonServerComponent() {
 				val distanceToNearestStar = stars.minOf { it.distance(loc) }
 
 				if (distanceToNearestStar <= 500.0) {
-					player.worldBorderEffect(100)
+					player.worldBorderEffect(20)
 				}
 			}
 		}

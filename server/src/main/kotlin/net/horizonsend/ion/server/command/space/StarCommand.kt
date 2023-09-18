@@ -8,9 +8,9 @@ import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandCompletion
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Subcommand
+import net.horizonsend.ion.common.database.schema.space.Star
 import net.horizonsend.ion.common.extensions.information
 import net.horizonsend.ion.common.extensions.success
-import net.horizonsend.ion.common.database.schema.space.Star
 import net.horizonsend.ion.server.features.space.CachedPlanet
 import net.horizonsend.ion.server.features.space.CachedStar
 import net.horizonsend.ion.server.features.space.Space
@@ -56,7 +56,9 @@ object StarCommand : net.horizonsend.ion.server.command.SLCommand() {
 			throw InvalidCommandArgument("A star with that name already exists!")
 		}
 
-		Star.create(name, spaceWorld.name, x, 128, z, material.name, size)
+		val seed: Long = name.hashCode().toLong()
+
+		Star.create(name, spaceWorld.name, x, 128, z, size, seed)
 
 		Space.reload()
 
@@ -64,6 +66,31 @@ object StarCommand : net.horizonsend.ion.server.command.SLCommand() {
 
 		sender.success(
 			"Created star $name at $x $z in $spaceWorld with material $material and size $size"
+		)
+	}
+
+	@Subcommand("set layer")
+	@Suppress("Unused")
+	@CommandCompletion("@stars 0|1|2 1|3|5 @nothing")
+	fun onSetCrustLayer(sender: Player, star: CachedStar, layer: Int, separation: Int, noise: Double, newMaterials: String) {
+		val materials: List<String> = try {
+			newMaterials.split(" ")
+				.map { "${Material.valueOf(it)}" }
+		} catch (exception: Exception) {
+			exception.printStackTrace()
+			throw InvalidCommandArgument("An error occurred parsing materials, try again")
+		}
+
+		val dbLayer = Star.CrustLayer(separation, noise, materials)
+
+		Star.setLayer(star.databaseId, layer, dbLayer)
+
+		val starName: String = star.name
+		Space.reload()
+		Space.starNameCache[starName].get().generate()
+
+		sender.success(
+			"Updated atmosphere materials in database, reloaded systems, and regenerated star."
 		)
 	}
 

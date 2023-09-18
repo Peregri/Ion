@@ -33,7 +33,7 @@ class CachedPlanet(
     orbitDistance: Int,
     private val orbitSpeed: Double,
     orbitProgress: Double,
-    val seed: Long,
+    override val seed: Long,
     val crustMaterials: List<BlockData>,
     val crustNoise: Double,
     val cloudDensity: Double,
@@ -41,7 +41,10 @@ class CachedPlanet(
     val cloudDensityNoise: Double,
     val cloudThreshold: Double,
     val cloudNoise: Double
-) : CelestialBody(sun.spaceWorldName, calculateOrbitLocation(sun, orbitDistance, orbitProgress)), NamedCelestialBody {
+) : CelestialBody(sun.spaceWorldName, calculateOrbitLocation(sun, orbitDistance, orbitProgress)),
+	NamedCelestialBody,
+	NoiseBasedSurfaceProvider
+{
 	companion object {
 		private const val CRUST_RADIUS_MAX = 180
 
@@ -158,19 +161,7 @@ class CachedPlanet(
 	override fun createStructure(): Map<Vec3i, BlockState> {
 		val random = SimplexNoiseGenerator(seed)
 
-		val crustPalette: List<BlockState> = crustMaterials.map(BlockData::nms)
-
-		val crust: Map<Vec3i, BlockState> = getSphereBlocks(crustRadius).associateWith { (x, y, z) ->
-			// number from -1 to 1
-			val simplexNoise = random.noise(x.d() * crustNoise, y.d() * crustNoise, z.d() * crustNoise)
-
-			val noise = (simplexNoise / 2.0 + 0.5)
-
-			return@associateWith when {
-				crustPalette.isEmpty() -> Blocks.DIRT.defaultBlockState()
-				else -> crustPalette[(noise * crustPalette.size).toInt()]
-			}
-		}
+		val crust = createCrust(crustRadius, crustNoise, crustMaterials)
 
 		val atmospherePalette: List<BlockState> = cloudMaterials.map(BlockData::nms)
 

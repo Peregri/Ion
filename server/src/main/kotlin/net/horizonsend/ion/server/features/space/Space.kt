@@ -68,16 +68,26 @@ object Space : IonServerComponent() {
 			val starX: Int = mongoStar.x
 			val starY: Int = 192 // mongoStar.y
 			val starZ: Int = mongoStar.z
-			val starMaterial: Material = Material.valueOf(mongoStar.material)
 			val starSize: Double = mongoStar.size
+			val seed = mongoStar.seed
+
+			val layers = mongoStar.layers
+				.map { (separation, density, materials) ->
+					val dataMats = materials.map {
+						(Material.getMaterial(it) ?: error("No material $it!")).createBlockData()
+					}
+
+					CachedStar.CachedCrustLayer(separation, density, dataMats)
+				}
 
 			val star = CachedStar(
 				databaseId = starId,
 				name = starName,
 				spaceWorldName = spaceWorldName,
 				location = Vec3i(starX, starY, starZ),
-				material = starMaterial,
-				size = starSize
+				size = starSize,
+				seed = seed,
+				layers = layers
 			)
 
 			stars += star
