@@ -24,6 +24,8 @@ object Power : TransportType<PowerStoringMultiblock>() {
 
 	override val storedLine: Int = 1
 
+	override val setIfEmpty: Boolean = true
+
 	override val offsets: Set<Vec3i> = setOf(
 		// most multiblocks have the sign a block up and out of the computer
 		Vec3i(1, 1, 0), Vec3i(-1, 1, 0), Vec3i(0, 1, -1), Vec3i(0, 1, 1),

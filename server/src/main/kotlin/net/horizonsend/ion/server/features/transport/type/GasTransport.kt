@@ -26,13 +26,15 @@ class GasTransport(val gas: Gas, displayLine: Int) : TransportType<GasStoringMul
 	override val namespacedKey: NamespacedKey = gas.namespacedKey
 	override val offsets: Set<Vec3i> = Power.offsets //TODO
 
-	override val prefixComponent: Component = text("G: ", NamedTextColor.RED)
+	override val prefixComponent: Component = gas.displayName.append(text(": ", NamedTextColor.RED))
 	override val textColor: TextColor = NamedTextColor.GOLD
 
 	override val transportBlocks: Set<Material> = STAINED_GLASS_TYPES.apply { addAll(STAINED_GLASS_PANE_TYPES) }
 	val directionalTransportBlocks: Set<Material> = STAINED_GLASS_PANE_TYPES
 
 	override val storedLine: Int = displayLine
+
+	override val setIfEmpty: Boolean = false
 
 	override fun checkStep(direction: BlockFace, nextType: Material): Set<BlockFace>  {
 		if (nextType.isGlassPane) return setOf(direction)

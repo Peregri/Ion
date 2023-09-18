@@ -11,11 +11,11 @@ object GasTankMultiblock : Multiblock(), GasStoringMultiblock {
 	val tierMaterial: Material = Material.DIAMOND_BLOCK
 	override val name = "gastank"
 
-	override val maxStoredValue = 500_000
+	override val maxStoredValue = 50_000
 	override val storableGasses: List<Gas> = Gasses.all().values.toList()
 
 	override val signText = createSignText(
-		line1 = "&cGas &7Tank",
+		line1 = "&cGas &6Tank",
 		line2 = "&e------",
 		line3 = null,
 		line4 = null

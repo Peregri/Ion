@@ -8,6 +8,7 @@ import net.horizonsend.ion.server.features.transport.type.TransportType
 import net.horizonsend.ion.server.miscellaneous.utils.Tasks
 import net.horizonsend.ion.server.miscellaneous.utils.Vec3i
 import net.horizonsend.ion.server.miscellaneous.utils.metrics
+import org.bukkit.NamespacedKey
 import org.bukkit.World
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.BlockData
@@ -52,4 +53,6 @@ object Transports : IonServerComponent() {
 			transport.startChain(world, x, y, z, direction, computer)
 		}
 	}
+
+	operator fun get(key: NamespacedKey) = transportTypes.firstOrNull { it.namespacedKey == key }
 }

@@ -41,10 +41,20 @@ abstract class TransportType<T : StoringMultiblock> {
 	abstract val inputBlock: Material
 	abstract val extractionBlock: Material
 
+	/** The prefix of the stored value on the sign */
 	abstract val prefixComponent: Component
+
+	/** The color of the stored value on the sign */
 	abstract val textColor: TextColor
 
+	/** Controls which line of the sign to put the display text */
 	abstract val storedLine: Int
+
+	/** Controls if the value on the destination should be set to zero if none is present */
+	abstract val setIfEmpty: Boolean
+
+	/** Offsets of signs relative to import computers */
+	abstract val offsets: Set<Vec3i>
 
 	private val storageSignUpdateCache = CacheBuilder.newBuilder()
 		.build<Sign, Int>(
@@ -64,6 +74,8 @@ abstract class TransportType<T : StoringMultiblock> {
 				for ((x, y, z) in offsets) {
 					val state = getStateIfLoaded(loc.world, loc.blockX + x, loc.blockY + y, loc.blockZ + z)
 					val sign = state as? Sign ?: continue
+
+					@Suppress("UNCHECKED_CAST") // No clue why its warning this
 					val multiblock = Multiblocks[sign, true, false] as? T ?: continue
 
 					return@from Optional.of(CachedMultiblockStore(multiblock, sign))
@@ -74,15 +86,8 @@ abstract class TransportType<T : StoringMultiblock> {
 
 	private fun setCachedStorageValue(sign: Sign, value: Int) = storageSignUpdateCache.put(sign, value)
 
-	abstract val offsets: Set<Vec3i>
-
 	abstract fun canTransfer(isDirectional: Boolean, face: BlockFace, data: BlockData): Boolean
 
-	/**
-	 * @param isDirectional If the origin wire is a directional wire
-	 * @param face The direction the origin wire was heading
-	 * @param data The data of the next wire
-	 */
 	private fun pickDirection(isDirectional: Boolean, adjacentWires: Set<BlockFace>, direction: BlockFace): BlockFace {
 		return when {
 			isDirectional && adjacentWires.contains(direction) -> direction
@@ -126,6 +131,9 @@ abstract class TransportType<T : StoringMultiblock> {
 				else -> null
 			}
 
+			// It does not have any of this transport's stored value
+			if (originSign?.persistentDataContainer?.keys?.contains(this.namespacedKey) == false) return
+
 			var originPower = when {
 				originSign != null -> storageSignUpdateCache[originSign]
 				else -> transportConfig.wires.solarPanelPower /
@@ -147,7 +155,8 @@ abstract class TransportType<T : StoringMultiblock> {
 					continue@computerLoop
 				}
 
-				val freeSpace = destinationMultiblock.canTake(this, storageSignUpdateCache, destinationSign) ?: return
+				// Check the destination multiblock's free space, or null if it can't be transferred to this multiblock
+				val freeSpace = destinationMultiblock.canTake(this, storageSignUpdateCache, destinationSign) ?: continue@computerLoop
 				val destinationPower = storageSignUpdateCache[destinationSign]
 
 				val transferLimit = when (destinationMultiblock) {
@@ -155,16 +164,20 @@ abstract class TransportType<T : StoringMultiblock> {
 					else -> transportConfig.wires.maxPowerInput
 				}
 
+				// Amount that can be transferred is capped by the free space, the transfer limit, and the available amount
 				val amount: Int = min(transferLimit, min(originPower, freeSpace))
 
+				// Update destination power
 				setCachedStorageValue(destinationSign, destinationPower + amount)
 
 				originPower -= amount
 
+				// Remove from origin
 				if (originSign != null) {
 					setCachedStorageValue(originSign, originPower)
 				}
 
+				// Try the other computers if theres still power to go around
 				if (originPower <= 0) {
 					return // no more power to extract
 				}
@@ -183,6 +196,7 @@ abstract class TransportType<T : StoringMultiblock> {
 
 		val newDirection = pickDirection(isDirectional, validWires, direction)
 
+		// Iterate again if theres more pipes in the chain
 		Transports.thread.submit {
 			step(world, x, y, z, newDirection, originComputer, distance + 1)
 		}
@@ -309,12 +323,13 @@ abstract class TransportType<T : StoringMultiblock> {
 		}
 
 		return sign.persistentDataContainer.get(namespacedKey, PersistentDataType.INTEGER)
-			?: return setStoredValue(sign, 0)
+			?: if (setIfEmpty) return setStoredValue(sign, 0) else return 0
 	}
-
+	var b = 3
 	@JvmOverloads
 	fun setStoredValue(sign: Sign, value: Int, fast: Boolean = true): Int {
 		val correctedValue: Int = if (!fast) {
+			@Suppress("UNCHECKED_CAST") // No clue why its warning this
 			val multiblock = (Multiblocks[sign] ?: return 0) as? T ?: return 0
 			value.coerceIn(0, multiblock.maxStoredValue)
 		} else {
@@ -329,5 +344,13 @@ abstract class TransportType<T : StoringMultiblock> {
 		sign.update(false, false)
 
 		return value
+	}
+
+	fun addValue(sign: Sign, amount: Int) {
+		setStoredValue(sign, getStoredValue(sign) + amount)
+	}
+
+	fun removeValue(sign: Sign, amount: Int) {
+		setStoredValue(sign, getStoredValue(sign) - amount, true)
 	}
 }

@@ -19,6 +19,7 @@ import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.Sound
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
@@ -239,6 +240,10 @@ object Gasses : IonServerComponent(false) {
 		if (customItem !is GasCanister) return null
 
 		return gasses[customItem.gasIdentifier]!!
+	}
+
+	operator fun get(key: NamespacedKey): Gas? {
+		return gasses.values.firstOrNull { it.namespacedKey == key }
 	}
 
 	fun all() = gasses

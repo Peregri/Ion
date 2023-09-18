@@ -1,12 +1,16 @@
 package net.horizonsend.ion.server.listener.misc
 
 import net.horizonsend.ion.common.extensions.successActionMessage
+import net.horizonsend.ion.server.features.customitems.CustomItems.customItem
+import net.horizonsend.ion.server.features.customitems.GasCanister
 import net.horizonsend.ion.server.features.machine.PowerMachines
 import net.horizonsend.ion.server.features.misc.getPower
 import net.horizonsend.ion.server.features.misc.setPower
+import net.horizonsend.ion.server.features.multiblock.GasStoringMultiblock
 import net.horizonsend.ion.server.features.multiblock.InteractableMultiblock
 import net.horizonsend.ion.server.features.multiblock.Multiblocks
 import net.horizonsend.ion.server.features.multiblock.PowerStoringMultiblock
+import net.horizonsend.ion.server.features.transport.Transports
 import net.horizonsend.ion.server.listener.SLEventListener
 import net.horizonsend.ion.server.miscellaneous.registrations.legacy.CustomBlockItem
 import net.horizonsend.ion.server.miscellaneous.registrations.legacy.CustomBlocks
@@ -50,6 +54,36 @@ object InteractListener : SLEventListener() {
 
 		setPower(item, power - powerToTransfer / item.amount)
 		PowerMachines.addPower(sign, powerToTransfer)
+	}
+
+	@EventHandler
+	fun onClickWithCanister(event: PlayerInteractEvent) {
+		val item = event.item ?: return
+		val customItem = item.customItem ?: return
+
+		if (event.action != Action.RIGHT_CLICK_BLOCK) return
+		if (customItem !is GasCanister) return
+
+		val sign = event.clickedBlock?.getState(false) as? Sign ?: return
+		val multiblock = Multiblocks[sign] as? GasStoringMultiblock ?: return
+
+		event.isCancelled = true
+
+		val originalFill = customItem.getFill(item)
+		var gasFill = originalFill
+		if (gasFill == 0) return
+
+		val transport = Transports[customItem.gas.namespacedKey] ?: return
+
+		val storedValue = PowerMachines.getPower(sign)
+		val maxStoredValue = multiblock.maxStoredValue
+
+		if (maxStoredValue - storedValue < gasFill) {
+			gasFill = maxStoredValue - storedValue
+		}
+
+		customItem.setFill(item, originalFill - gasFill)
+		transport.addValue(sign, gasFill)
 	}
 
 	@EventHandler
