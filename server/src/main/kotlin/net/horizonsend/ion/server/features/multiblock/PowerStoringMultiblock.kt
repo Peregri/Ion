@@ -1,5 +1,5 @@
 package net.horizonsend.ion.server.features.multiblock
 
-interface PowerStoringMultiblock {
-	val maxPower: Int
+interface PowerStoringMultiblock : StoringMultiblock {
+	override val maxStored: Int
 }

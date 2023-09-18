@@ -2,8 +2,8 @@ package net.horizonsend.ion.server.features.multiblock.printer
 
 import net.horizonsend.ion.server.features.machine.PowerMachines
 import net.horizonsend.ion.server.features.multiblock.FurnaceMultiblock
-import net.horizonsend.ion.server.features.multiblock.MultiblockShape
 import net.horizonsend.ion.server.features.multiblock.Multiblock
+import net.horizonsend.ion.server.features.multiblock.MultiblockShape
 import net.horizonsend.ion.server.features.multiblock.PowerStoringMultiblock
 import net.horizonsend.ion.server.miscellaneous.utils.LegacyItemUtils
 import net.horizonsend.ion.server.miscellaneous.utils.getFacing
@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack
 
 abstract class PrinterMultiblock : Multiblock(), PowerStoringMultiblock, FurnaceMultiblock {
 	override val name: String = "printer"
-	override val maxPower: Int = 50_000
+	override val maxStored: Int = 50_000
 	abstract fun getOutput(product: Material): ItemStack
 
 	protected abstract fun MultiblockShape.RequirementBuilder.printerCoreBlock()

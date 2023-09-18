@@ -1,7 +1,7 @@
 package net.horizonsend.ion.server.features.multiblock.powerbank
 
-import net.horizonsend.ion.server.features.multiblock.MultiblockShape
 import net.horizonsend.ion.server.features.multiblock.Multiblock
+import net.horizonsend.ion.server.features.multiblock.MultiblockShape
 import net.horizonsend.ion.server.features.multiblock.PowerStoringMultiblock
 
 object PowerCellMultiblock : Multiblock(), PowerStoringMultiblock {
@@ -14,7 +14,7 @@ object PowerCellMultiblock : Multiblock(), PowerStoringMultiblock {
 		line4 = "&cCompact Power"
 	)
 
-	override val maxPower = 50_000
+	override val maxStored = 50_000
 
 	override fun MultiblockShape.buildStructure() {
 		z(+0) {

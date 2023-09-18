@@ -4,14 +4,21 @@ import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import net.horizonsend.ion.server.IonServer
 import net.horizonsend.ion.server.IonServerComponent
-import net.horizonsend.ion.server.command.admin.IonCommand
 import net.horizonsend.ion.server.features.machine.PowerMachines
 import net.horizonsend.ion.server.features.multiblock.Multiblocks
 import net.horizonsend.ion.server.features.multiblock.PowerStoringMultiblock
 import net.horizonsend.ion.server.features.multiblock.areashield.AreaShield
-import net.horizonsend.ion.server.miscellaneous.utils.*
-import net.minecraft.core.BlockPos
-import org.bukkit.Bukkit
+import net.horizonsend.ion.server.miscellaneous.utils.ADJACENT_BLOCK_FACES
+import net.horizonsend.ion.server.miscellaneous.utils.Tasks
+import net.horizonsend.ion.server.miscellaneous.utils.Vec3i
+import net.horizonsend.ion.server.miscellaneous.utils.debugHighlightBlock
+import net.horizonsend.ion.server.miscellaneous.utils.getBlockDataSafe
+import net.horizonsend.ion.server.miscellaneous.utils.getBlockTypeSafe
+import net.horizonsend.ion.server.miscellaneous.utils.getStateIfLoaded
+import net.horizonsend.ion.server.miscellaneous.utils.matchesAxis
+import net.horizonsend.ion.server.miscellaneous.utils.metrics
+import net.horizonsend.ion.server.miscellaneous.utils.orNull
+import net.horizonsend.ion.server.miscellaneous.utils.randomEntry
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
@@ -25,13 +32,24 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.TimeUnit
+import kotlin.collections.Set
+import kotlin.collections.asSequence
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.filter
+import kotlin.collections.isNotEmpty
+import kotlin.collections.iterator
+import kotlin.collections.mutableSetOf
+import kotlin.collections.setOf
+import kotlin.collections.shuffled
+import kotlin.collections.toSet
 import kotlin.math.min
 import kotlin.system.measureNanoTime
 
 object Wires : IonServerComponent() {
 	val INPUT_COMPUTER_BLOCK = Material.NOTE_BLOCK
 
-	private lateinit var thread: ExecutorService
+	lateinit var thread: ExecutorService
 
 	// region cache stuff for sync code
 	// should only be updated from the checkComputers
@@ -60,7 +78,7 @@ object Wires : IonServerComponent() {
 				return@from Optional.empty()
 			}
 		)
-	private val computerCheckQueue = ConcurrentLinkedQueue<() -> Unit>()
+	val computerCheckQueue = ConcurrentLinkedQueue<() -> Unit>()
 
 	//endregion
 
@@ -123,7 +141,7 @@ object Wires : IonServerComponent() {
 		if (::thread.isInitialized) thread.shutdown()
 	}
 
-	fun isAnyWire(material: Material) = when (material) {
+	fun isAnyWire(material: Material) = when (material) { //TODO done
 		Material.END_ROD, Material.SPONGE, Material.IRON_BLOCK, Material.REDSTONE_BLOCK -> true
 		else -> false
 	}
@@ -195,8 +213,16 @@ object Wires : IonServerComponent() {
 		// put it on the queue, see the top of the file for how that works.
 		computerCheckQueue.offer {
 			checkComputers(
-				world = world, x = nextX, y = nextY, z = nextZ, isDirectional = isDirectional, direction = direction,
-				computers = adjacentComputers, wires = adjacentWires, originComputer = computer, distance = distance + 1
+				world = world,
+				x = nextX,
+				y = nextY,
+				z = nextZ,
+				isDirectional = isDirectional,
+				direction = direction,
+				computers = adjacentComputers,
+				wires = adjacentWires,
+				originComputer = computer,
+				distance = distance + 1
 			)
 		}
 	}
@@ -209,7 +235,7 @@ object Wires : IonServerComponent() {
 	private fun canWiresTransfer(isDirectional: Boolean, face: BlockFace, data: BlockData): Boolean {
 		return when (data.material) {
 			// anything can go into end rod wires, but only if the rotation axis matches
-			Material.END_ROD -> getWireRotation(data).matchesAxis(face)
+			Material.END_ROD -> getDirectionalRotation(data).matchesAxis(face)
 			// anything can go into directional connectors
 			Material.IRON_BLOCK, Material.REDSTONE_BLOCK -> true
 			// anything besides directional connectors can go into sponge wires
@@ -277,7 +303,7 @@ object Wires : IonServerComponent() {
 				}
 
 				val destinationPower = powerSignUpdateCache[destinationSign]
-				val destinationPowerMax = destinationMultiblock.maxPower
+				val destinationPowerMax = destinationMultiblock.maxStored
 				val destinationFreeSpace = destinationPowerMax - destinationPower
 
 				val transferLimit = when (destinationMultiblock) {
@@ -325,5 +351,5 @@ object Wires : IonServerComponent() {
 		}
 	}
 
-	private fun getWireRotation(data: BlockData): BlockFace = (data as Directional).facing
+	fun getDirectionalRotation(data: BlockData): BlockFace = (data as Directional).facing
 }

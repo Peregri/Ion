@@ -1,11 +1,10 @@
 package net.horizonsend.ion.server.features.multiblock.misc
 
-import net.horizonsend.ion.server.features.multiblock.MultiblockShape
 import net.horizonsend.ion.server.features.multiblock.Multiblock
+import net.horizonsend.ion.server.features.multiblock.MultiblockShape
 import net.horizonsend.ion.server.features.multiblock.PowerStoringMultiblock
 import net.horizonsend.ion.server.miscellaneous.utils.getFacing
 import net.horizonsend.ion.server.miscellaneous.utils.rightFace
-import org.bukkit.Location
 import org.bukkit.block.Sign
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
@@ -21,7 +20,7 @@ object ShipFactoryMultiblock : Multiblock(), PowerStoringMultiblock {
 		line4 = null
 	)
 
-	override val maxPower: Int = 1_000_000
+	override val maxStored: Int = 1_000_000
 
 	override fun onTransformSign(player: Player, sign: Sign) {
 		sign.setLine(2, sign.getLine(1))

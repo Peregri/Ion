@@ -1,7 +1,7 @@
 package net.horizonsend.ion.server.features.multiblock.cosmeticmultiblocks
 
-import net.horizonsend.ion.server.features.multiblock.MultiblockShape
 import net.horizonsend.ion.server.features.multiblock.Multiblock
+import net.horizonsend.ion.server.features.multiblock.MultiblockShape
 import net.horizonsend.ion.server.features.multiblock.PowerStoringMultiblock
 import org.bukkit.Material
 
@@ -65,7 +65,7 @@ abstract class PyrotechnicMachine : Multiblock(), PowerStoringMultiblock {
 		}
 	}
 
-	override val maxPower = 50_000
+	override val maxStored = 50_000
 
 	override val name = "pyromachine"
 

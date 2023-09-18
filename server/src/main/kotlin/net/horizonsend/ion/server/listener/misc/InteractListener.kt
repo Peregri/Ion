@@ -2,15 +2,15 @@ package net.horizonsend.ion.server.listener.misc
 
 import net.horizonsend.ion.common.extensions.successActionMessage
 import net.horizonsend.ion.server.features.machine.PowerMachines
-import net.horizonsend.ion.server.miscellaneous.registrations.legacy.CustomBlockItem
-import net.horizonsend.ion.server.miscellaneous.registrations.legacy.CustomBlocks
-import net.horizonsend.ion.server.miscellaneous.registrations.legacy.CustomItems
 import net.horizonsend.ion.server.features.misc.getPower
 import net.horizonsend.ion.server.features.misc.setPower
 import net.horizonsend.ion.server.features.multiblock.InteractableMultiblock
 import net.horizonsend.ion.server.features.multiblock.Multiblocks
 import net.horizonsend.ion.server.features.multiblock.PowerStoringMultiblock
 import net.horizonsend.ion.server.listener.SLEventListener
+import net.horizonsend.ion.server.miscellaneous.registrations.legacy.CustomBlockItem
+import net.horizonsend.ion.server.miscellaneous.registrations.legacy.CustomBlocks
+import net.horizonsend.ion.server.miscellaneous.registrations.legacy.CustomItems
 import net.horizonsend.ion.server.miscellaneous.utils.Tasks
 import net.horizonsend.ion.server.miscellaneous.utils.isBed
 import org.bukkit.GameMode
@@ -43,7 +43,7 @@ object InteractListener : SLEventListener() {
 		if (powerToTransfer == 0) return
 
 		val machinePower = PowerMachines.getPower(sign)
-		val maxMachinePower = multiblock.maxPower
+		val maxMachinePower = multiblock.maxStored
 		if (maxMachinePower - machinePower < powerToTransfer) {
 			powerToTransfer = maxMachinePower - machinePower
 		}

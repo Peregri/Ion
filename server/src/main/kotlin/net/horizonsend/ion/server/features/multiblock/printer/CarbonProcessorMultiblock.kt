@@ -2,8 +2,8 @@ package net.horizonsend.ion.server.features.multiblock.printer
 
 import net.horizonsend.ion.server.features.machine.PowerMachines
 import net.horizonsend.ion.server.features.multiblock.FurnaceMultiblock
-import net.horizonsend.ion.server.features.multiblock.MultiblockShape
 import net.horizonsend.ion.server.features.multiblock.Multiblock
+import net.horizonsend.ion.server.features.multiblock.MultiblockShape
 import net.horizonsend.ion.server.features.multiblock.PowerStoringMultiblock
 import net.horizonsend.ion.server.miscellaneous.utils.LegacyItemUtils
 import net.horizonsend.ion.server.miscellaneous.utils.getFacing
@@ -18,7 +18,7 @@ import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.ItemStack
 
 object CarbonProcessorMultiblock : Multiblock(), PowerStoringMultiblock, FurnaceMultiblock {
-	override val maxPower: Int = 30000
+	override val maxStored: Int = 30000
 	override val name = "processor"
 
 	override val signText = createSignText(

@@ -28,7 +28,7 @@ import org.bukkit.inventory.ItemStack
 import kotlin.math.roundToInt
 
 object GasPowerPlantMultiblock : Multiblock(), PowerStoringMultiblock, FurnaceMultiblock {
-	override val maxPower: Int = 500000
+	override val maxStored: Int = 500000
 
 	override val name: String = "gaspowerplant"
 
@@ -177,7 +177,7 @@ object GasPowerPlantMultiblock : Multiblock(), PowerStoringMultiblock, FurnaceMu
 
 		val consumed = checkCanisters(sign, furnace, fuelItem, fuel, oxidizerItem, oxidizer) ?: return
 
-		if (PowerMachines.getPower(sign) <= maxPower) {
+		if (PowerMachines.getPower(sign) <= maxStored) {
 			event.isBurning = true
 			furnace.burnTime = fuelType.cooldown.toShort()
 			furnace.cookTime = (-1000).toShort()

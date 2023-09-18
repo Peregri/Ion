@@ -48,7 +48,7 @@ object PowerMachines : IonServerComponent() {
 	fun setPower(sign: Sign, power: Int, fast: Boolean = true): Int {
 		val correctedPower: Int = if (!fast) {
 			val multiblock = (Multiblocks[sign] ?: return 0) as? PowerStoringMultiblock ?: return 0
-			power.coerceIn(0, multiblock.maxPower)
+			power.coerceIn(0, multiblock.maxStored)
 		} else {
 			power.coerceAtLeast(0)
 		}

@@ -1,9 +1,9 @@
 package net.horizonsend.ion.server.features.multiblock.mininglasers
 
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
 import net.horizonsend.ion.server.features.multiblock.MultiblockShape
 import net.horizonsend.ion.server.miscellaneous.utils.Vec3i
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.block.BlockFace
 
 sealed class MiningLaserMultiblockTier2 : MiningLaserMultiblock() {
@@ -15,7 +15,7 @@ sealed class MiningLaserMultiblockTier2 : MiningLaserMultiblock() {
 		Component.text("")
 	)
 
-	override val maxPower: Int = 300000
+	override val maxStored: Int = 300000
 	override val beamOrigin = Triple(0, 3, 1)
 	override val range: Double = 90.0
 	override val mineRadius = 5

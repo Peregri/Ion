@@ -56,7 +56,7 @@ abstract class AreaShield(val radius: Int) : Multiblock(), PowerStoringMultibloc
 
 	override val name get() = "areashield"
 
-	override val maxPower = 100_000
+	override val maxStored = 100_000
 
 	override val signText = createSignText(
 		"&6Area",

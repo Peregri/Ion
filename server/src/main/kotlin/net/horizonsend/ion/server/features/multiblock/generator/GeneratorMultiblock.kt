@@ -29,7 +29,7 @@ abstract class GeneratorMultiblock(tierText: String, private val tierMaterial: M
 			return
 		}
 
-		if (PowerMachines.getPower(sign) < this.maxPower) {
+		if (PowerMachines.getPower(sign) < this.maxStored) {
 			val fuelItem = inventory.fuel ?: return
 			val fuel = GeneratorFuel.getFuel(fuelItem) ?: return
 

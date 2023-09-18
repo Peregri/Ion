@@ -162,7 +162,7 @@ object AreaShields : IonServerComponent(true) {
 			var power = PowerMachines.getPower(sign)
 			if (power <= 0) continue
 			power -= blockList.size * 2
-			val percent = power.toFloat() / multiblock.maxPower.toFloat()
+			val percent = power.toFloat() / multiblock.maxStored.toFloat()
 			if (usePower) PowerMachines.setPower(sign, power)
 			val color = Color.fromRGB(
 				min(255f, 255 - max(0f, 255 * percent)).toInt(),
