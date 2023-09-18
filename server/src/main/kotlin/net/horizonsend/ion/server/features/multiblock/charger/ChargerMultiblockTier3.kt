@@ -5,6 +5,6 @@ import org.bukkit.Material
 
 object ChargerMultiblockTier3 : ChargerMultiblock(ChatColor.AQUA.toString() + "Tier 3") {
 	override val tierMaterial = Material.DIAMOND_BLOCK
-	override val maxStored = 300_000
+	override val maxStoredValue = 300_000
 	override val powerPerSecond = 3000
 }

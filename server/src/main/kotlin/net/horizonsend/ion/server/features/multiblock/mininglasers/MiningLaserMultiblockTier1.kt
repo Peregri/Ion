@@ -15,7 +15,7 @@ sealed class MiningLaserMultiblockTier1 : MiningLaserMultiblock() {
 		Component.text("")
 	)
 
-	override val maxStored: Int = 100000
+	override val maxStoredValue: Int = 100000
 	override val beamOrigin = Triple(0, 3, 1)
 	override val range: Double = 60.0
 	override val mineRadius = 3

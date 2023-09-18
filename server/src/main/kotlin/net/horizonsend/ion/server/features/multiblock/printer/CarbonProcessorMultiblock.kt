@@ -18,7 +18,7 @@ import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.ItemStack
 
 object CarbonProcessorMultiblock : Multiblock(), PowerStoringMultiblock, FurnaceMultiblock {
-	override val maxStored: Int = 30000
+	override val maxStoredValue: Int = 30000
 	override val name = "processor"
 
 	override val signText = createSignText(

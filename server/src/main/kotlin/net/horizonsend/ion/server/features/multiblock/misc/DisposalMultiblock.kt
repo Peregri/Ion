@@ -29,7 +29,7 @@ object DisposalMultiblock : Multiblock(), PowerStoringMultiblock, FurnaceMultibl
 	)
 
 
-	override val maxStored: Int = 150_000
+	override val maxStoredValue: Int = 150_000
 
 	private const val powerConsumed = 0.5
 

@@ -43,7 +43,7 @@ object InteractListener : SLEventListener() {
 		if (powerToTransfer == 0) return
 
 		val machinePower = PowerMachines.getPower(sign)
-		val maxMachinePower = multiblock.maxStored
+		val maxMachinePower = multiblock.maxStoredValue
 		if (maxMachinePower - machinePower < powerToTransfer) {
 			powerToTransfer = maxMachinePower - machinePower
 		}

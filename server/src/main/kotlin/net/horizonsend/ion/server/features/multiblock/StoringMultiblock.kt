@@ -6,14 +6,14 @@ import org.bukkit.block.Sign
 
 /** General interface for a multiblock that can store a value **/
 interface StoringMultiblock {
-	val maxStored: Int
+	val maxStoredValue: Int
 
 	// Checks if the multiblock can take an input of power
 	fun canTake(transportType: TransportType<*>, cache: LoadingCache<Sign, Int>, destinationSign: Sign): Int? {
-		val destinationPower = cache[destinationSign]
-		val destinationPowerMax = maxStored
+		val destinationValue = cache[destinationSign]
+		val destinationValueMax = maxStoredValue
 
-		return destinationPowerMax - destinationPower
+		return destinationValueMax - destinationValue
 	}
 }
 

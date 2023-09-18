@@ -20,7 +20,7 @@ object ShipFactoryMultiblock : Multiblock(), PowerStoringMultiblock {
 		line4 = null
 	)
 
-	override val maxStored: Int = 1_000_000
+	override val maxStoredValue: Int = 1_000_000
 
 	override fun onTransformSign(player: Player, sign: Sign) {
 		sign.setLine(2, sign.getLine(1))

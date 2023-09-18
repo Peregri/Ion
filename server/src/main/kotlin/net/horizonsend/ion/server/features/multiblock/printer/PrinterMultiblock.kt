@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack
 
 abstract class PrinterMultiblock : Multiblock(), PowerStoringMultiblock, FurnaceMultiblock {
 	override val name: String = "printer"
-	override val maxStored: Int = 50_000
+	override val maxStoredValue: Int = 50_000
 	abstract fun getOutput(product: Material): ItemStack
 
 	protected abstract fun MultiblockShape.RequirementBuilder.printerCoreBlock()

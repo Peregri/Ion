@@ -65,7 +65,7 @@ abstract class PyrotechnicMachine : Multiblock(), PowerStoringMultiblock {
 		}
 	}
 
-	override val maxStored = 50_000
+	override val maxStoredValue = 50_000
 
 	override val name = "pyromachine"
 

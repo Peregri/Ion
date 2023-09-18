@@ -3,6 +3,6 @@ package net.horizonsend.ion.server.features.multiblock.generator
 import org.bukkit.Material
 
 object GeneratorMultiblockTier2 : GeneratorMultiblock("&eTier 2", Material.GOLD_BLOCK) {
-	override val maxStored = 175_000
+	override val maxStoredValue = 175_000
 	override val speed = 1.25
 }

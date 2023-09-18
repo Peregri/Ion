@@ -1,5 +1,5 @@
 package net.horizonsend.ion.server.features.multiblock.ammopress
 
 object StandardAmmoPressMultiblock : AmmoPressMultiblock() {
-	override val maxStored = 100_000
+	override val maxStoredValue = 100_000
 }

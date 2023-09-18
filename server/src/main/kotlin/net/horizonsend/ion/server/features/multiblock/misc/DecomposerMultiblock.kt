@@ -9,7 +9,7 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
 
 object DecomposerMultiblock : Multiblock(), PowerStoringMultiblock {
-	override val maxStored: Int = 75_000
+	override val maxStoredValue: Int = 75_000
 	override val name: String = "decomposer"
 	override val signText = createSignText(
 		"&cDecomposer",

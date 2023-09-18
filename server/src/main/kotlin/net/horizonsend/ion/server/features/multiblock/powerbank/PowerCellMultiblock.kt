@@ -14,7 +14,7 @@ object PowerCellMultiblock : Multiblock(), PowerStoringMultiblock {
 		line4 = "&cCompact Power"
 	)
 
-	override val maxStored = 50_000
+	override val maxStoredValue = 50_000
 
 	override fun MultiblockShape.buildStructure() {
 		z(+0) {

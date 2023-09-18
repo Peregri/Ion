@@ -316,7 +316,7 @@ abstract class TransportType<T : StoringMultiblock> {
 	fun setStoredValue(sign: Sign, value: Int, fast: Boolean = true): Int {
 		val correctedValue: Int = if (!fast) {
 			val multiblock = (Multiblocks[sign] ?: return 0) as? T ?: return 0
-			value.coerceIn(0, multiblock.maxStored)
+			value.coerceIn(0, multiblock.maxStoredValue)
 		} else {
 			value.coerceAtLeast(0)
 		}

@@ -11,7 +11,7 @@ object GasTankMultiblock : Multiblock(), GasStoringMultiblock {
 	val tierMaterial: Material = Material.DIAMOND_BLOCK
 	override val name = "gastank"
 
-	override val maxStored = 500_000
+	override val maxStoredValue = 500_000
 	override val storableGasses: List<Gas> = Gasses.all().values.toList()
 
 	override val signText = createSignText(
