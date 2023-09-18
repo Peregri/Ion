@@ -43,7 +43,6 @@ object Power : TransportType<PowerStoringMultiblock>() {
 			else -> setOf() // if it's not one of the above blocks it's not a wire block, so end the wire chain
 		}
 
-
 	/**
 	 * @param isDirectional If the origin wire is a directional wire
 	 * @param face The direction the origin wire was heading
