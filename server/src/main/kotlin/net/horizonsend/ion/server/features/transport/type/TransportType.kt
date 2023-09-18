@@ -3,7 +3,6 @@ package net.horizonsend.ion.server.features.transport.type
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import net.horizonsend.ion.server.IonServer
-import net.horizonsend.ion.server.features.machine.PowerMachines
 import net.horizonsend.ion.server.features.multiblock.Multiblocks
 import net.horizonsend.ion.server.features.multiblock.PowerStoringMultiblock
 import net.horizonsend.ion.server.features.multiblock.StoringMultiblock
@@ -120,7 +119,7 @@ abstract class TransportType<T : StoringMultiblock> {
 
 		if (validComputers.isNotEmpty()) {
 			val originSign: Sign? = when {
-				// if there's an origin computer, find its storage machine, if it's not findable, end the chain
+				// if there's an origin computer, find its power machine, if it's not findable, end the chain
 				originComputer != null -> multiblockCache[originComputer.toLocation(world)]
 					.orNull()?.sign
 					?: return
@@ -128,14 +127,14 @@ abstract class TransportType<T : StoringMultiblock> {
 				else -> null
 			}
 
-			var originValue = when {
+			var originPower = when {
 				originSign != null -> storageSignUpdateCache[originSign]
 				else -> transportConfig.wires.solarPanelPower /
 					if (world.environment == World.Environment.NORMAL) 1 else 2
 			}
 
 			// if it has no power then there is nothing to extract from it anymore
-			if (originValue <= 0) {
+			if (originPower <= 0) {
 				return
 			}
 
@@ -149,29 +148,44 @@ abstract class TransportType<T : StoringMultiblock> {
 					continue@computerLoop
 				}
 
-				val destinationValue = storageSignUpdateCache[destinationSign]
-				val destinationStorageMax = destinationMultiblock.maxStored
-				val destinationFreeSpace = destinationStorageMax - destinationValue
+				val freeSpace = destinationMultiblock.canTake(this, storageSignUpdateCache, destinationSign) ?: return
+				val destinationPower = storageSignUpdateCache[destinationSign]
 
 				val transferLimit = when (destinationMultiblock) {
 					is AreaShield -> transportConfig.wires.maxShieldInput
 					else -> transportConfig.wires.maxPowerInput
 				}
 
-				val amount: Int = min(transferLimit, min(originValue, destinationFreeSpace))
+				val amount: Int = min(transferLimit, min(originPower, freeSpace))
 
-				setCachedStorageValue(destinationSign, destinationValue + amount)
+				setCachedStorageValue(destinationSign, destinationPower + amount)
 
-				originValue -= amount
+				originPower -= amount
 
 				if (originSign != null) {
-					setCachedStorageValue(originSign, originValue)
+					setCachedStorageValue(originSign, originPower)
 				}
 
-				if (originValue <= 0) {
+				if (originPower <= 0) {
 					return // no more power to extract
 				}
 			}
+		}
+
+		// double check the wires to make sure they can still be pushed into
+		val validWires = wires.filter {
+			val data = getBlockDataSafe(world, x + it.modX, y + it.modY, z + it.modZ)
+				?: return@filter false
+
+			return@filter canTransfer(isDirectional, direction, data)
+		}.toSet()
+
+		if (validWires.isEmpty()) return // end the chain if there's no more valid wires
+
+		val newDirection = pickDirection(isDirectional, validWires, direction)
+
+		Transports.thread.submit {
+			step(world, x, y, z, newDirection, originComputer, distance + 1)
 		}
 	}
 
@@ -202,7 +216,7 @@ abstract class TransportType<T : StoringMultiblock> {
 			}
 
 			for ((sign, power) in storageSignUpdateCache.asMap()) {
-				PowerMachines.setPower(sign, power, fast = true)
+				setStoredValue(sign, power, fast = true)
 			}
 
 			storageSignUpdateCache.invalidateAll()
