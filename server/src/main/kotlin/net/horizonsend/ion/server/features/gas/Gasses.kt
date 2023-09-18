@@ -9,6 +9,7 @@ import net.horizonsend.ion.server.features.customitems.GasCanister
 import net.horizonsend.ion.server.features.gas.type.Gas
 import net.horizonsend.ion.server.features.gas.type.GasFuel
 import net.horizonsend.ion.server.features.gas.type.GasOxidizer
+import net.horizonsend.ion.server.miscellaneous.registrations.NamespacedKeys
 import net.horizonsend.ion.server.miscellaneous.utils.Tasks
 import net.horizonsend.ion.server.miscellaneous.utils.getFacing
 import net.horizonsend.ion.server.miscellaneous.utils.getRelativeIfLoaded
@@ -39,6 +40,7 @@ object Gasses : IonServerComponent(false) {
 			containerIdentifier = "GAS_CANISTER_HYDROGEN",
 			powerPerUnit = IonServer.gasConfiguration.gasses.hydrogen.powerPerUnit,
 			cooldown = IonServer.gasConfiguration.gasses.hydrogen.cooldown,
+			namespacedKey = NamespacedKeys.HYDROGEN,
 			factorSupplier = IonServer.gasConfiguration.gasses.hydrogen::formattedFactors
 		) {}
 	)
@@ -49,6 +51,7 @@ object Gasses : IonServerComponent(false) {
 			containerIdentifier = "GAS_CANISTER_NITROGEN",
 			powerPerUnit = IonServer.gasConfiguration.gasses.nitrogen.powerPerUnit,
 			cooldown = IonServer.gasConfiguration.gasses.nitrogen.cooldown,
+			namespacedKey = NamespacedKeys.NITROGEN,
 			factorSupplier = IonServer.gasConfiguration.gasses.nitrogen::formattedFactors
 		) {}
 	)
@@ -59,6 +62,7 @@ object Gasses : IonServerComponent(false) {
 			containerIdentifier = "GAS_CANISTER_METHANE",
 			powerPerUnit = IonServer.gasConfiguration.gasses.methane.powerPerUnit,
 			cooldown = IonServer.gasConfiguration.gasses.methane.cooldown,
+			namespacedKey = NamespacedKeys.METHANE,
 			factorSupplier = IonServer.gasConfiguration.gasses.methane::formattedFactors
 		) {}
 	)
@@ -70,6 +74,7 @@ object Gasses : IonServerComponent(false) {
 			displayName = text("Oxygen", NamedTextColor.YELLOW),
 			containerIdentifier = "GAS_CANISTER_OXYGEN",
 			powerMultipler = IonServer.gasConfiguration.gasses.oxygen.powerMultiplier,
+			namespacedKey = NamespacedKeys.OXYGEN,
 			factorSupplier = IonServer.gasConfiguration.gasses.oxygen::formattedFactors
 		) {}
 	)
@@ -79,6 +84,7 @@ object Gasses : IonServerComponent(false) {
 			displayName = text("Chlorine", NamedTextColor.YELLOW),
 			containerIdentifier = "GAS_CANISTER_CHLORINE",
 			powerMultipler = IonServer.gasConfiguration.gasses.chlorine.powerMultiplier,
+			namespacedKey = NamespacedKeys.CHLORINE,
 			factorSupplier = IonServer.gasConfiguration.gasses.chlorine::formattedFactors
 		) {}
 	)
@@ -88,6 +94,7 @@ object Gasses : IonServerComponent(false) {
 			displayName = text("Fluorine", NamedTextColor.YELLOW),
 			containerIdentifier = "GAS_CANISTER_FLUORINE",
 			powerMultipler = IonServer.gasConfiguration.gasses.fluorine.powerMultiplier,
+			namespacedKey = NamespacedKeys.FLUORINE,
 			factorSupplier = IonServer.gasConfiguration.gasses.fluorine::formattedFactors
 		) {}
 	)
@@ -98,6 +105,7 @@ object Gasses : IonServerComponent(false) {
 			identifier = "HELIUM",
 			displayName = text("Helium", NamedTextColor.BLUE),
 			containerIdentifier = "GAS_CANISTER_HELIUM",
+			namespacedKey = NamespacedKeys.HELIUM,
 			factorSupplier = IonServer.gasConfiguration.gasses.helium::formattedFactors
 		) {}
 	)
@@ -106,6 +114,7 @@ object Gasses : IonServerComponent(false) {
 			identifier = "CARBON_DIOXIDE",
 			displayName = text("Carbon Dioxide", NamedTextColor.BLUE),
 			containerIdentifier = "GAS_CANISTER_CARBON_DIOXIDE",
+			namespacedKey = NamespacedKeys.CARBON_DIOXIDE,
 			factorSupplier = IonServer.gasConfiguration.gasses.carbonDioxide::formattedFactors
 		) {}
 	)

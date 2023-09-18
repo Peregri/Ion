@@ -64,7 +64,7 @@ import net.horizonsend.ion.server.features.starship.hyperspace.HyperspaceMap
 import net.horizonsend.ion.server.features.starship.subsystem.shield.StarshipShields
 import net.horizonsend.ion.server.features.transport.Extractors
 import net.horizonsend.ion.server.features.transport.TransportConfig
-import net.horizonsend.ion.server.features.transport.Wires
+import net.horizonsend.ion.server.features.transport.Transports
 import net.horizonsend.ion.server.features.transport.pipe.Pipes
 import net.horizonsend.ion.server.features.transport.pipe.filter.Filters
 import net.horizonsend.ion.server.features.tutorial.TutorialManager
@@ -108,7 +108,7 @@ val components: List<IonComponent> = listOf(
 	Extractors,
 	Pipes,
 	Filters,
-	Wires,
+	Transports,
 
 	Gear,
 

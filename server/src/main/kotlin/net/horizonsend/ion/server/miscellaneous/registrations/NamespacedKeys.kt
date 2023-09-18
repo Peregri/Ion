@@ -47,6 +47,16 @@ object NamespacedKeys {
 
 	val CUSTOM_ENTITY = key("custom_entity")
 
+	//Gasses
+	val HYDROGEN = key("hydrogen")
+	val NITROGEN = key("nitrogen")
+	val METHANE = key("methane")
+	val OXYGEN = key("oxygen")
+	val CHLORINE = key("chlorine")
+	val FLUORINE = key("fluorine")
+	val HELIUM = key("helium")
+	val CARBON_DIOXIDE = key("carbon_dioxide")
+
 	@Deprecated("") val ORE_CHECK = key("oreCheck")
 
 	val POWER = key("power")

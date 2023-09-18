@@ -9,7 +9,7 @@ import net.horizonsend.ion.server.features.multiblock.PowerStoringMultiblock
 import net.horizonsend.ion.server.features.multiblock.StoringMultiblock
 import net.horizonsend.ion.server.features.multiblock.areashield.AreaShield
 import net.horizonsend.ion.server.features.transport.IonMetricsCollection
-import net.horizonsend.ion.server.features.transport.Wires
+import net.horizonsend.ion.server.features.transport.Transports
 import net.horizonsend.ion.server.features.transport.transportConfig
 import net.horizonsend.ion.server.miscellaneous.registrations.NamespacedKeys
 import net.horizonsend.ion.server.miscellaneous.utils.ADJACENT_BLOCK_FACES
@@ -41,10 +41,12 @@ abstract class TransportType<T : StoringMultiblock> {
 	abstract val namespacedKey: NamespacedKey
 	abstract val transportBlocks: Set<Material>
 	abstract val inputBlock: Material
-	abstract val extractionBlocK: Material
+	abstract val extractionBlock: Material
 
 	abstract val prefixComponent: Component
 	abstract val textColor: TextColor
+
+	abstract val storedLine: Int
 
 	private val storageSignUpdateCache = CacheBuilder.newBuilder()
 		.build<Sign, Int>(
@@ -73,6 +75,7 @@ abstract class TransportType<T : StoringMultiblock> {
 		)
 
 	private fun setCachedStorageValue(sign: Sign, value: Int) = storageSignUpdateCache.put(sign, value)
+
 	abstract val offsets: Set<Vec3i>
 
 	abstract fun canTransfer(isDirectional: Boolean, face: BlockFace, data: BlockData): Boolean
@@ -172,15 +175,24 @@ abstract class TransportType<T : StoringMultiblock> {
 		}
 	}
 
-	private fun scheduleUpdates() {
+	/**
+	 * Power updates can be slow. In fact, they're the only sync part of wires, and by far the most CPU-intensive.
+	 * So, they're batched in a queue down below. It's easier to explain how it works with code,
+	 * so just look at this file to get a feel for it.
+	 *
+	 * `powerUpdateRate` is the rate in ticks of the updates being batched.
+	 * Higher values mean more updates being batched together and potentially better usage of caching.
+	 * However, it also means larger delay, and could affect user usage.
+	 */
+	fun scheduleUpdates() {
 		val interval = transportConfig.wires.powerUpdateRate
 		Tasks.syncRepeat(delay = interval, interval = interval) {
 			val start = System.nanoTime()
 
 			val maxTime = TimeUnit.MILLISECONDS.toNanos(transportConfig.wires.powerUpdateMaxTime)
 
-			while (!Wires.computerCheckQueue.isEmpty() && System.nanoTime() - start < maxTime) {
-				val time = measureNanoTime { Wires.computerCheckQueue.poll().invoke() }
+			while (!Transports.computerCheckQueue.isEmpty() && System.nanoTime() - start < maxTime) {
+				val time = measureNanoTime { Transports.computerCheckQueue.poll().invoke() }
 
 				IonMetricsCollection.timeSpent += time
 			}
@@ -198,7 +210,7 @@ abstract class TransportType<T : StoringMultiblock> {
 	}
 
 	fun startWireChain(world: World, x: Int, y: Int, z: Int, direction: BlockFace, computer: Vec3i?) {
-		Wires.thread.submit {
+		Transports.thread.submit {
 			step(world, x, y, z, direction, computer, 0)
 		}
 	}
@@ -243,7 +255,7 @@ abstract class TransportType<T : StoringMultiblock> {
 
 			val data = getBlockDataSafe(world, adjacentX, adjacentY, adjacentZ) ?: continue
 
-			if (data.material == Wires.INPUT_COMPUTER_BLOCK) {
+			if (data.material == inputBlock) {
 				adjacentComputers.add(face)
 			} else if (canTransfer(isDirectional, face, data)) {
 				adjacentWires.add(face)
@@ -262,7 +274,7 @@ abstract class TransportType<T : StoringMultiblock> {
 		// check computers on the main thread as their signs need to be accessed,
 		// and tile entities aren't as easy to access in a thread-safe manner.
 		// put it on the queue, see the top of the file for how that works.
-		Wires.computerCheckQueue.offer {
+		Transports.computerCheckQueue.offer {
 			checkComputers(
 				world = world,
 				x = nextX,
@@ -301,7 +313,7 @@ abstract class TransportType<T : StoringMultiblock> {
 
 		sign.persistentDataContainer.set(namespacedKey, PersistentDataType.INTEGER, correctedValue)
 
-		sign.line(2, Component.text().append(prefixComponent, Component.text(correctedValue, textColor)).build())
+		sign.line(storedLine, Component.text().append(prefixComponent, Component.text(correctedValue, textColor)).build())
 		sign.update(false, false)
 
 		return value

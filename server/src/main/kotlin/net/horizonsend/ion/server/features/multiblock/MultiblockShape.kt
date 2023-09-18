@@ -2,8 +2,8 @@ package net.horizonsend.ion.server.features.multiblock
 
 import net.horizonsend.ion.server.features.multiblock.areashield.AreaShield10.buildStructure
 import net.horizonsend.ion.server.features.transport.Extractors
-import net.horizonsend.ion.server.features.transport.Wires
 import net.horizonsend.ion.server.features.transport.pipe.Pipes
+import net.horizonsend.ion.server.features.transport.type.Power
 import net.horizonsend.ion.server.miscellaneous.registrations.legacy.CustomBlock
 import net.horizonsend.ion.server.miscellaneous.registrations.legacy.CustomBlocks
 import net.horizonsend.ion.server.miscellaneous.utils.CARDINAL_BLOCK_FACES
@@ -303,7 +303,7 @@ class MultiblockShape {
 		fun titaniumBlock() = customBlock(CustomBlocks.MINERAL_TITANIUM.block)
 		fun aluminumBlock() = customBlock(CustomBlocks.MINERAL_ALUMINUM.block)
 		fun chetheriteBlock() = customBlock(CustomBlocks.MINERAL_CHETHERITE.block)
-		fun wireInputComputer() = type(Wires.INPUT_COMPUTER_BLOCK)
+		fun wireInputComputer() = type(Power.inputBlock)
 
 		fun redstoneLamp() = filteredTypes { it.isRedstoneLamp }
 
