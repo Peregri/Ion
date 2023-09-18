@@ -1,5 +1,6 @@
 package net.horizonsend.ion.server.features.space
 
+import net.horizonsend.ion.server.IonServer
 import net.horizonsend.ion.server.IonServerComponent
 import net.horizonsend.ion.server.features.gear.powerarmor.PowerArmorManager
 import net.horizonsend.ion.server.features.gear.powerarmor.PowerArmorModule
@@ -13,6 +14,7 @@ import net.horizonsend.ion.server.miscellaneous.utils.isInside
 import net.horizonsend.ion.server.miscellaneous.utils.isWater
 import net.horizonsend.ion.server.miscellaneous.utils.listen
 import net.horizonsend.ion.server.miscellaneous.utils.squared
+import net.horizonsend.ion.server.miscellaneous.utils.worldBorderEffect
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Material
@@ -29,39 +31,8 @@ import java.util.concurrent.TimeUnit
 
 object SpaceMechanics : IonServerComponent() {
 	override fun onEnable() {
-		Tasks.syncRepeat(10, 10) {
-			for (player in Bukkit.getOnlinePlayers()) {
-				if (player.gameMode != GameMode.SURVIVAL || player.isDead || !player.hasGravity()) {
-					continue
-				}
-
-				val space = SpaceWorlds.contains(player.world)
-
-				if (!space) {
-					continue
-				}
-
-				if (!space || isInside(player.eyeLocation, 1)) {
-					player.allowFlight = true
-					player.flySpeed = 0.06f
-					continue
-				}
-
-				player.allowFlight = true
-
-				if (!player.isFlying && !player.isOnGround) {
-					player.isFlying = true
-				}
-
-				player.flySpeed = 0.02f
-
-				if (player.isSprinting) {
-					player.isSprinting = false
-				}
-
-				checkSuffocation(player)
-			}
-		}
+		Tasks.syncRepeat(10, 10) { doSpaceFloating() }
+		Tasks.syncRepeat(20, 20) { playWarningToPlayersNearStars() }
 
 		listen<ItemSpawnEvent> { event ->
 			val entity = event.entity
@@ -146,6 +117,63 @@ object SpaceMechanics : IonServerComponent() {
 			if (!SpaceWorlds.contains(event.block.world)) return@listen
 
 			if (event.newState.type.isWater) event.isCancelled = true
+		}
+	}
+
+	fun doSpaceFloating() {
+		for (player in Bukkit.getOnlinePlayers()) {
+			if (player.gameMode != GameMode.SURVIVAL || player.isDead || !player.hasGravity()) {
+				continue
+			}
+
+			val space = SpaceWorlds.contains(player.world)
+
+			if (!space) {
+				continue
+			}
+
+			if (!space || isInside(player.eyeLocation, 1)) {
+				player.allowFlight = true
+				player.flySpeed = 0.06f
+				continue
+			}
+
+			player.allowFlight = true
+
+			if (!player.isFlying && !player.isOnGround) {
+				player.isFlying = true
+			}
+
+			player.flySpeed = 0.02f
+
+			if (player.isSprinting) {
+				player.isSprinting = false
+			}
+
+			checkSuffocation(player)
+		}
+	}
+
+	fun playWarningToPlayersNearStars() {
+		// Do it by world to avoid checking planets every iteration
+
+		val starsLocationsByWorld = Space.getStars().groupBy { it.spaceWorld }.mapValues { (_, stars) ->
+			stars.map { it.location.toVector() }
+		}
+
+		for (world in IonServer.server.worlds) {
+			val players = world.players
+			val stars = starsLocationsByWorld[world] ?: continue
+
+			for (player in players) {
+				val loc = player.location.toVector()
+
+				val distanceToNearestStar = stars.minOf { it.distance(loc) }
+
+				if (distanceToNearestStar <= 500.0) {
+					player.worldBorderEffect(100)
+				}
+			}
 		}
 	}
 
