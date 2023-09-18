@@ -58,6 +58,7 @@ import net.horizonsend.ion.server.features.multiblock.particleshield.ShieldMulti
 import net.horizonsend.ion.server.features.multiblock.particleshield.ShieldMultiblockClass30
 import net.horizonsend.ion.server.features.multiblock.particleshield.ShieldMultiblockClass65
 import net.horizonsend.ion.server.features.multiblock.particleshield.ShieldMultiblockClass85
+import net.horizonsend.ion.server.features.multiblock.powerbank.GasTankMultiblock
 import net.horizonsend.ion.server.features.multiblock.powerbank.PowerBankMultiblockTier1
 import net.horizonsend.ion.server.features.multiblock.powerbank.PowerBankMultiblockTier2
 import net.horizonsend.ion.server.features.multiblock.powerbank.PowerBankMultiblockTier3
@@ -215,7 +216,8 @@ object Multiblocks : IonServerComponent() {
 			GasPowerPlantMultiblock,
 			VentMultiblock,
 
-			LandingGearMultiblock
+			LandingGearMultiblock,
+			GasTankMultiblock
 		)
 	}
 

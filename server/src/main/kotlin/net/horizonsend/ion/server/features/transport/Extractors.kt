@@ -166,6 +166,7 @@ object Extractors : IonServerComponent() {
 				continue
 			}
 
+			val gasInputs: MutableSet<Vec3i> = mutableSetOf() // List of
 			val computers: MutableSet<Vec3i> = mutableSetOf() // list of note block power machine computers
 			val wires: MutableSet<BlockFace> = mutableSetOf() // list of end rod wires
 			val inventories: MutableSet<Vec3i> = mutableSetOf() // list of inventories to extract from to pipes
@@ -200,6 +201,10 @@ object Extractors : IonServerComponent() {
 						wires.add(face)
 					}
 
+					adjacentType == Material.SMITHING_TABLE -> {
+						gasInputs.add(Vec3i(adjacentX, adjacentY, adjacentZ))
+					}
+
 					adjacentType == Material.DIAMOND_BLOCK && face == BlockFace.UP -> {
 						val sensor: BlockData = getBlockDataSafe(world, adjacentX, adjacentY + 1, adjacentZ)
 							?: continue@extractorLoop
@@ -216,8 +221,12 @@ object Extractors : IonServerComponent() {
 				handlePipe(world, extractorLocation, inventories, pipes)
 			}
 
+			if (gasInputs.isNotEmpty() && pipes.isNotEmpty()) {
+				handleTransport(world, x, y, z, gasInputs, pipes)
+			}
+
 			if (computers.isNotEmpty() && wires.isNotEmpty()) {
-				handleWire(world, x, y, z, computers, wires)
+				handleTransport(world, x, y, z, computers, wires)
 			}
 
 			if (solarSensor != null) {
@@ -287,11 +296,11 @@ object Extractors : IonServerComponent() {
 		}
 	}
 
-	private fun handleWire(world: World, x: Int, y: Int, z: Int, computers: Set<Vec3i>, wires: Set<BlockFace>) {
+	private fun handleTransport(world: World, x: Int, y: Int, z: Int, computers: Set<Vec3i>, wires: Set<BlockFace>) {
 		val wire: BlockFace = wires.randomEntry()
 		val computer: Vec3i = computers.randomEntry()
 
-		Power.startWireChain(world, x, y, z, wire, computer)
+		Transports.startChain(world, x, y, z, wire, computer)
 	}
 
 	private fun handleSolarPanel(world: World, x: Int, y: Int, z: Int, wires: Set<BlockFace>, sensor: BlockData) {
@@ -305,7 +314,7 @@ object Extractors : IonServerComponent() {
 
 		if (!inverted && power > 6 && world.environment == World.Environment.NORMAL ||
 			inverted && world.environment != World.Environment.NORMAL) {
-			Power.startWireChain(world, x, y, z, wires.randomEntry(), null)
+			Power.startChain(world, x, y, z, wires.randomEntry(), null)
 		}
 	}
 

@@ -6,7 +6,9 @@ import net.horizonsend.ion.server.features.transport.type.GasTransport
 import net.horizonsend.ion.server.features.transport.type.Power
 import net.horizonsend.ion.server.features.transport.type.TransportType
 import net.horizonsend.ion.server.miscellaneous.utils.Tasks
+import net.horizonsend.ion.server.miscellaneous.utils.Vec3i
 import net.horizonsend.ion.server.miscellaneous.utils.metrics
+import org.bukkit.World
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.Directional
@@ -44,4 +46,10 @@ object Transports : IonServerComponent() {
 	}
 
 	fun getDirectionalRotation(data: BlockData): BlockFace = (data as Directional).facing
+
+	fun startChain(world: World, x: Int, y: Int, z: Int, direction: BlockFace, computer: Vec3i?) {
+		for (transport in transportTypes) {
+			transport.startChain(world, x, y, z, direction, computer)
+		}
+	}
 }

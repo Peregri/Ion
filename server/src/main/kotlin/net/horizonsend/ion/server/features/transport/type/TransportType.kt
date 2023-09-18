@@ -11,7 +11,6 @@ import net.horizonsend.ion.server.features.transport.IonMetricsCollection
 import net.horizonsend.ion.server.features.transport.Transports
 import net.horizonsend.ion.server.features.transport.transportConfig
 import net.horizonsend.ion.server.miscellaneous.registrations.NamespacedKeys
-import net.horizonsend.ion.server.miscellaneous.utils.ADJACENT_BLOCK_FACES
 import net.horizonsend.ion.server.miscellaneous.utils.Tasks
 import net.horizonsend.ion.server.miscellaneous.utils.Vec3i
 import net.horizonsend.ion.server.miscellaneous.utils.debugHighlightBlock
@@ -223,11 +222,13 @@ abstract class TransportType<T : StoringMultiblock> {
 		}
 	}
 
-	fun startWireChain(world: World, x: Int, y: Int, z: Int, direction: BlockFace, computer: Vec3i?) {
+	fun startChain(world: World, x: Int, y: Int, z: Int, direction: BlockFace, computer: Vec3i?) {
 		Transports.thread.submit {
 			step(world, x, y, z, direction, computer, 0)
 		}
 	}
+
+	abstract fun checkStep(direction: BlockFace, nextType: Material): Set<BlockFace>
 
 	private fun step(world: World, x: Int, y: Int, z: Int, direction: BlockFace, computer: Vec3i?, distance: Int) {
 		if (distance > transportConfig.wires.maxDistance) {
@@ -245,11 +246,8 @@ abstract class TransportType<T : StoringMultiblock> {
 
 		val reverse = direction.oppositeFace // used for ensuring we're not going backwards when dealing w/ connectors
 
-		val checkDirections = when (nextType) {
-			Material.END_ROD -> setOf(direction)
-			Material.SPONGE, Material.IRON_BLOCK, Material.REDSTONE_BLOCK -> ADJACENT_BLOCK_FACES
-			else -> return // if it's not one of the above blocks it's not a wire block, so end the wire chain
-		}
+		val checkDirections = checkStep(direction, nextType)
+		if (checkDirections.isEmpty()) return
 
 		// directional wires go forward if possible, and don't go into sponges
 		val isDirectional = nextType == Material.IRON_BLOCK || nextType == Material.REDSTONE_BLOCK

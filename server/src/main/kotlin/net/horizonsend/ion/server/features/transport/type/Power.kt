@@ -3,6 +3,7 @@ package net.horizonsend.ion.server.features.transport.type
 import net.horizonsend.ion.server.features.multiblock.PowerStoringMultiblock
 import net.horizonsend.ion.server.features.transport.Transports
 import net.horizonsend.ion.server.miscellaneous.registrations.NamespacedKeys
+import net.horizonsend.ion.server.miscellaneous.utils.ADJACENT_BLOCK_FACES
 import net.horizonsend.ion.server.miscellaneous.utils.Vec3i
 import net.horizonsend.ion.server.miscellaneous.utils.matchesAxis
 import net.kyori.adventure.text.Component
@@ -33,6 +34,13 @@ object Power : TransportType<PowerStoringMultiblock>() {
 		// upside down mining lasers have signs below
 		Vec3i(1, -1, 0), Vec3i(-1, -1, 0), Vec3i(0, -1, -1), Vec3i(0, -1, 1),
 	)
+
+	override fun checkStep(direction: BlockFace, nextType: Material): Set<BlockFace> = when (nextType) {
+			Material.END_ROD -> setOf(direction)
+			Material.SPONGE, Material.IRON_BLOCK, Material.REDSTONE_BLOCK -> ADJACENT_BLOCK_FACES
+			else -> setOf() // if it's not one of the above blocks it's not a wire block, so end the wire chain
+		}
+
 
 	/**
 	 * @param isDirectional If the origin wire is a directional wire
