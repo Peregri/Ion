@@ -75,7 +75,7 @@ object InteractListener : SLEventListener() {
 
 		val transport = Transports[customItem.gas.namespacedKey] ?: return
 
-		val storedValue = PowerMachines.getPower(sign)
+		val storedValue = transport.getStoredValue(sign)
 		val maxStoredValue = multiblock.maxStoredValue
 
 		if (maxStoredValue - storedValue < gasFill) {
