@@ -1,5 +1,6 @@
 package net.horizonsend.ion.common.database.schema.space
 
+import com.mongodb.client.result.UpdateResult
 import net.horizonsend.ion.common.database.DbObject
 import net.horizonsend.ion.common.database.Oid
 import net.horizonsend.ion.common.database.OidDbObjectCompanion
@@ -9,6 +10,7 @@ import org.litote.kmongo.ensureUniqueIndex
 import org.litote.kmongo.set
 import org.litote.kmongo.setTo
 import org.litote.kmongo.setValue
+import org.litote.kmongo.updateOneById
 
 data class Star(
 	override val _id: Oid<Star> = objId(),
@@ -64,6 +66,9 @@ data class Star(
 
 			setLayers(id, existingLayers)
 		}
+
+		fun setSize(id: Oid<Star>, size: Double): UpdateResult =
+			col.updateOneById(id, setValue(Star::size, size))
 	}
 
 	data class CrustLayer(

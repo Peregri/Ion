@@ -122,6 +122,9 @@ data class Planet(
 		fun setCrustMaterials(id: Oid<Planet>, crustMaterials: List<String>): UpdateResult =
 			col.updateOneById(id, setValue(Planet::crustMaterials, crustMaterials))
 
+		fun setSize(id: Oid<Planet>, size: Double): UpdateResult =
+			col.updateOneById(id, setValue(Planet::size, size))
+
 		fun delete(id: Oid<Planet>): DeleteResult {
 			return col.deleteOneById(id)
 		}

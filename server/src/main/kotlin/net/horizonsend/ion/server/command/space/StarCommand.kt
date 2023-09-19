@@ -11,6 +11,7 @@ import co.aikar.commands.annotation.Subcommand
 import net.horizonsend.ion.common.database.schema.space.Star
 import net.horizonsend.ion.common.extensions.information
 import net.horizonsend.ion.common.extensions.success
+import net.horizonsend.ion.common.extensions.userError
 import net.horizonsend.ion.server.features.space.CachedPlanet
 import net.horizonsend.ion.server.features.space.CachedStar
 import net.horizonsend.ion.server.features.space.Space
@@ -81,6 +82,11 @@ object StarCommand : net.horizonsend.ion.server.command.SLCommand() {
 			throw InvalidCommandArgument("An error occurred parsing materials, try again")
 		}
 
+		if (star.layers.sumOf { it.seperation } + star.sphereRadius + star.location.y >= star.spaceWorld!!.maxHeight) {
+			sender.userError("That would increase the star's size to outside of build limit!")
+			return
+		}
+
 		val dbLayer = Star.CrustLayer(separation, noise, materials)
 
 		Star.setLayer(star.databaseId, layer, dbLayer)
@@ -91,6 +97,25 @@ object StarCommand : net.horizonsend.ion.server.command.SLCommand() {
 
 		sender.success(
 			"Updated atmosphere materials in database, reloaded systems, and regenerated star."
+		)
+	}
+
+	@Suppress("Unused")
+	@Subcommand("set size")
+	@CommandCompletion("@planets 0.25")
+	fun onSetRadius(sender: CommandSender, star: CachedStar, size: Double) {
+		if (size <= 0 || size > 1) {
+			throw InvalidCommandArgument("Size must be more than 0 and no more than 1")
+		}
+
+		Star.setSize(star.databaseId, size)
+
+		val planetName: String = star.name
+		Space.reload()
+		Space.starNameCache[planetName].get().generate()
+
+		sender.success(
+			"Updated seed in database, reloaded systems, and regenerated star."
 		)
 	}
 

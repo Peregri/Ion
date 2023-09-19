@@ -108,6 +108,25 @@ object PlanetCommand : net.horizonsend.ion.server.command.SLCommand() {
 	}
 
 	@Suppress("Unused")
+	@Subcommand("set size")
+	@CommandCompletion("@planets 0.25")
+	fun onSetRadius(sender: CommandSender, planet: CachedPlanet, size: Double) {
+		if (size <= 0 || size > 1) {
+			throw InvalidCommandArgument("Size must be more than 0 and no more than 1")
+		}
+
+		Planet.setSize(planet.databaseId, size)
+
+		val planetName: String = planet.name
+		Space.reload()
+		Space.planetNameCache[planetName].get().generate()
+
+		sender.success(
+			"Updated seed in database, reloaded systems, and regenerated planet."
+		)
+	}
+
+	@Suppress("Unused")
 	@Subcommand("set atmosphere materials")
 	@CommandCompletion("@planets @nothing")
 	fun onSetAtmosphereMaterials(sender: CommandSender, planet: CachedPlanet, newMaterials: String) {
