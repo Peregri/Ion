@@ -8,12 +8,14 @@ import net.horizonsend.ion.server.features.gas.type.GasOxidizer
 import net.horizonsend.ion.server.features.machine.GeneratorFuel
 import net.horizonsend.ion.server.features.starship.factory.StarshipFactories
 import net.horizonsend.ion.server.features.transport.Extractors
+import net.horizonsend.ion.server.features.transport.colorMap
+import net.horizonsend.ion.server.features.transport.isColoredPipe
+import net.horizonsend.ion.server.features.transport.isDirectionalPipe
 import net.horizonsend.ion.server.features.transport.pipe.filter.FilterData
 import net.horizonsend.ion.server.features.transport.pipe.filter.FilterItemData
 import net.horizonsend.ion.server.features.transport.pipe.filter.Filters
 import net.horizonsend.ion.server.features.transport.transportConfig
 import net.horizonsend.ion.server.miscellaneous.utils.ADJACENT_BLOCK_FACES
-import net.horizonsend.ion.server.miscellaneous.utils.MATERIALS
 import net.horizonsend.ion.server.miscellaneous.utils.Tasks
 import net.horizonsend.ion.server.miscellaneous.utils.Vec3i
 import net.horizonsend.ion.server.miscellaneous.utils.areaDebugMessage
@@ -26,8 +28,6 @@ import net.horizonsend.ion.server.miscellaneous.utils.getBlockTypeSafe
 import net.horizonsend.ion.server.miscellaneous.utils.getStateIfLoaded
 import net.horizonsend.ion.server.miscellaneous.utils.isGlass
 import net.horizonsend.ion.server.miscellaneous.utils.isGlassPane
-import net.horizonsend.ion.server.miscellaneous.utils.isStainedGlass
-import net.horizonsend.ion.server.miscellaneous.utils.isStainedGlassPane
 import net.horizonsend.ion.server.miscellaneous.utils.randomEntry
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -37,7 +37,6 @@ import org.bukkit.inventory.FurnaceInventory
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.ItemStack
-import java.util.EnumMap
 import java.util.EnumSet
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.ExecutorService
@@ -134,10 +133,6 @@ object Pipes : IonServerComponent() {
 	fun isPipedInventory(material: Material): Boolean = inventoryTypes.contains(material)
 
 	fun isAnyPipe(material: Material): Boolean = material.isGlass || material.isGlassPane
-
-	private fun isDirectionalPipe(material: Material): Boolean = material.isGlassPane
-
-	private fun isColoredPipe(material: Material): Boolean = material.isStainedGlass || material.isStainedGlassPane
 
 	/**
 	 * Starts a pipe chain that continues until it goes too long,
@@ -513,16 +508,6 @@ object Pipes : IonServerComponent() {
 		// normally, pick a random direction to go in
 		else -> adjacentPipes.randomEntry()
 	}
-
-	private val colorMap = EnumMap(
-		MATERIALS.filter { it.isGlass || it.isGlassPane }.associateWith {
-			return@associateWith when {
-				it == Material.GLASS_PANE -> Material.GLASS
-				it.isStainedGlassPane -> Material.getMaterial(it.name.removeSuffix("_PANE"))!!
-				else -> it
-			}
-		}
-	)
 
 	private fun canPipesTransfer(originType: Material, otherType: Material): Boolean {
 		return isAnyPipe(otherType) && // it has to be any of the valid pipe types

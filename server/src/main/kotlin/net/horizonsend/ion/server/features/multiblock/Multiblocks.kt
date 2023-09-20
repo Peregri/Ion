@@ -18,8 +18,10 @@ import net.horizonsend.ion.server.features.multiblock.dockingtube.DisconnectedDo
 import net.horizonsend.ion.server.features.multiblock.drills.DrillMultiblockTier1
 import net.horizonsend.ion.server.features.multiblock.drills.DrillMultiblockTier2
 import net.horizonsend.ion.server.features.multiblock.drills.DrillMultiblockTier3
+import net.horizonsend.ion.server.features.multiblock.gas.DirectGasCollectorMulitblock
 import net.horizonsend.ion.server.features.multiblock.gas.GasCollectorMultiblock
 import net.horizonsend.ion.server.features.multiblock.gas.GasPowerPlantMultiblock
+import net.horizonsend.ion.server.features.multiblock.gas.GasTankMultiblock
 import net.horizonsend.ion.server.features.multiblock.gas.VentMultiblock
 import net.horizonsend.ion.server.features.multiblock.generator.GeneratorMultiblockTier1
 import net.horizonsend.ion.server.features.multiblock.generator.GeneratorMultiblockTier2
@@ -58,7 +60,6 @@ import net.horizonsend.ion.server.features.multiblock.particleshield.ShieldMulti
 import net.horizonsend.ion.server.features.multiblock.particleshield.ShieldMultiblockClass30
 import net.horizonsend.ion.server.features.multiblock.particleshield.ShieldMultiblockClass65
 import net.horizonsend.ion.server.features.multiblock.particleshield.ShieldMultiblockClass85
-import net.horizonsend.ion.server.features.multiblock.powerbank.GasTankMultiblock
 import net.horizonsend.ion.server.features.multiblock.powerbank.PowerBankMultiblockTier1
 import net.horizonsend.ion.server.features.multiblock.powerbank.PowerBankMultiblockTier2
 import net.horizonsend.ion.server.features.multiblock.powerbank.PowerBankMultiblockTier3
@@ -212,12 +213,14 @@ object Multiblocks : IonServerComponent() {
 			MiningLaserMultiblockTier3Bottom,
 
 			ItemSplitterMultiblock,
+
 			GasCollectorMultiblock,
 			GasPowerPlantMultiblock,
 			VentMultiblock,
+			GasTankMultiblock,
+			DirectGasCollectorMulitblock,
 
-			LandingGearMultiblock,
-			GasTankMultiblock
+			LandingGearMultiblock
 		)
 	}
 

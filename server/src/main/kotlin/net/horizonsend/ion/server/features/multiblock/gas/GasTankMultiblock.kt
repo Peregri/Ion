@@ -1,4 +1,4 @@
-package net.horizonsend.ion.server.features.multiblock.powerbank
+package net.horizonsend.ion.server.features.multiblock.gas
 
 import net.horizonsend.ion.server.features.gas.Gasses
 import net.horizonsend.ion.server.features.gas.type.Gas
@@ -12,7 +12,7 @@ object GasTankMultiblock : Multiblock(), GasStoringMultiblock {
 	override val name = "gastank"
 
 	override val maxStoredValue = 50_000
-	override val storableGasses: List<Gas> = Gasses.all().values.toList()
+	override val storableGasses: Set<Gas> = Gasses.all().values.toSet()
 
 	override val signText = createSignText(
 		line1 = "&cGas &6Tank",

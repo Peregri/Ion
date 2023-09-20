@@ -86,9 +86,9 @@ abstract class TransportType<T : StoringMultiblock> {
 
 	private fun setCachedStorageValue(sign: Sign, value: Int) = storageSignUpdateCache.put(sign, value)
 
-	abstract fun canTransfer(isDirectional: Boolean, face: BlockFace, data: BlockData): Boolean
+	abstract fun canTransfer(originType: Material, isDirectional: Boolean, face: BlockFace, data: BlockData): Boolean
 
-	private fun pickDirection(isDirectional: Boolean, adjacentWires: Set<BlockFace>, direction: BlockFace): BlockFace {
+	open fun pickDirection(isDirectional: Boolean, adjacentWires: Set<BlockFace>, direction: BlockFace): BlockFace {
 		return when {
 			isDirectional && adjacentWires.contains(direction) -> direction
 			else -> adjacentWires.randomEntry()
@@ -189,7 +189,7 @@ abstract class TransportType<T : StoringMultiblock> {
 			val data = getBlockDataSafe(world, x + it.modX, y + it.modY, z + it.modZ)
 				?: return@filter false
 
-			return@filter canTransfer(isDirectional, direction, data)
+			return@filter canTransfer(data.material, isDirectional, direction, data)
 		}.toSet()
 
 		if (validWires.isEmpty()) return // end the chain if there's no more valid wires
@@ -244,10 +244,14 @@ abstract class TransportType<T : StoringMultiblock> {
 
 	abstract fun checkStep(direction: BlockFace, nextType: Material): Set<BlockFace>
 
+	abstract fun isDirectional(isDirectional: Material): Boolean
+
 	private fun step(world: World, x: Int, y: Int, z: Int, direction: BlockFace, computer: Vec3i?, distance: Int) {
 		if (distance > transportConfig.wires.maxDistance) {
 			return
 		}
+
+		val originMaterial = getBlockTypeSafe(world, x, y, z) ?: return
 
 		val nextX = x + direction.modX
 		val nextY = y + direction.modY
@@ -264,7 +268,7 @@ abstract class TransportType<T : StoringMultiblock> {
 		if (checkDirections.isEmpty()) return
 
 		// directional wires go forward if possible, and don't go into sponges
-		val isDirectional = nextType == Material.IRON_BLOCK || nextType == Material.REDSTONE_BLOCK
+		val isDirectional = isDirectional(nextType)
 
 		val adjacentComputers = mutableSetOf<BlockFace>()
 		val adjacentWires = mutableSetOf<BlockFace>()
@@ -283,7 +287,7 @@ abstract class TransportType<T : StoringMultiblock> {
 
 			if (data.material == inputBlock) {
 				adjacentComputers.add(face)
-			} else if (canTransfer(isDirectional, face, data)) {
+			} else if (canTransfer(originMaterial, isDirectional, face, data)) {
 				adjacentWires.add(face)
 			}
 		}
@@ -325,9 +329,9 @@ abstract class TransportType<T : StoringMultiblock> {
 		return sign.persistentDataContainer.get(namespacedKey, PersistentDataType.INTEGER)
 			?: if (setIfEmpty) return setStoredValue(sign, 0) else return 0
 	}
-	var b = 3
+
 	@JvmOverloads
-	fun setStoredValue(sign: Sign, value: Int, fast: Boolean = true): Int {
+	open fun setStoredValue(sign: Sign, value: Int, fast: Boolean = true): Int {
 		val correctedValue: Int = if (!fast) {
 			@Suppress("UNCHECKED_CAST") // No clue why its warning this
 			val multiblock = (Multiblocks[sign] ?: return 0) as? T ?: return 0
@@ -337,6 +341,14 @@ abstract class TransportType<T : StoringMultiblock> {
 		}
 
 		if (!sign.persistentDataContainer.has(NamespacedKeys.MULTIBLOCK)) return value
+
+		if (value == 0) {
+			sign.persistentDataContainer.remove(this.namespacedKey)
+			sign.line(storedLine, Component.empty())
+			sign.update()
+
+			return 0
+		}
 
 		sign.persistentDataContainer.set(namespacedKey, PersistentDataType.INTEGER, correctedValue)
 

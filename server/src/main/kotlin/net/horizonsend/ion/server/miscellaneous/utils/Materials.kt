@@ -12,10 +12,12 @@ fun getMatchingMaterials(filter: (Material) -> Boolean): EnumSet<Material> =
 	MATERIALS.filterTo(EnumSet.noneOf(Material::class.java), filter)
 
 val STAINED_GLASS_TYPES = getMatchingMaterials { it.name.endsWith("_STAINED_GLASS") }
+val GLASS_TYPES = getMatchingMaterials { it.name.endsWith("_GLASS") }
 val Material.isGlass: Boolean get() = this == Material.GLASS || this.isStainedGlass
 val Material.isStainedGlass: Boolean get() = STAINED_GLASS_TYPES.contains(this)
 
 val STAINED_GLASS_PANE_TYPES = getMatchingMaterials { it.name.endsWith("_STAINED_GLASS_PANE") }
+val GLASS_PANE_TYPES = getMatchingMaterials { it.name.endsWith("_GLASS_PANE") }
 val Material.isGlassPane: Boolean get() = this == Material.GLASS_PANE || this.isStainedGlassPane
 val Material.isStainedGlassPane: Boolean get() = STAINED_GLASS_PANE_TYPES.contains(this)
 

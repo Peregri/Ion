@@ -43,12 +43,14 @@ object Power : TransportType<PowerStoringMultiblock>() {
 			else -> setOf() // if it's not one of the above blocks it's not a wire block, so end the wire chain
 		}
 
+	override fun isDirectional(isDirectional: Material): Boolean = isDirectional == Material.IRON_BLOCK || isDirectional == Material.REDSTONE_BLOCK
+
 	/**
 	 * @param isDirectional If the origin wire is a directional wire
 	 * @param face The direction the origin wire was heading
 	 * @param data The data of the next wire
 	 */
-	override fun canTransfer(isDirectional: Boolean, face: BlockFace, data: BlockData): Boolean {
+	override fun canTransfer(originType: Material, isDirectional: Boolean, face: BlockFace, data: BlockData): Boolean {
 		return when (data.material) {
 			// anything can go into end rod wires, but only if the rotation axis matches
 			Material.END_ROD -> Transports.getDirectionalRotation(data).matchesAxis(face)

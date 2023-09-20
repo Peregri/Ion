@@ -20,7 +20,6 @@ data class Star(
 	var y: Int,
 	var z: Int,
 	var size: Double,
-	@Deprecated("Being removed in favor of noise") var material: String? = null,
 	val seed: Long,
 	val layers: List<CrustLayer> = listOf(),
 ) : DbObject {

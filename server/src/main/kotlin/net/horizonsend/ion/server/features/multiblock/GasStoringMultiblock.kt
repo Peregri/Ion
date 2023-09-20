@@ -9,7 +9,7 @@ import org.bukkit.block.Sign
 
 interface GasStoringMultiblock : StoringMultiblock {
 	override val maxStoredValue: Int
-	val storableGasses: List<Gas>
+	val storableGasses: Set<Gas>
 
 	// Theres probably a better way of doing this
 	override fun canTake(transportType: TransportType<*>, cache: LoadingCache<Sign, Int>, destinationSign: Sign): Int? {
