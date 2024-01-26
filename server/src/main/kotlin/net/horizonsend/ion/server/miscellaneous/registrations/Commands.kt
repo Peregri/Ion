@@ -48,6 +48,7 @@ import net.horizonsend.ion.server.command.qol.CalcExpCommand
 import net.horizonsend.ion.server.command.qol.CheckProtectionCommand
 import net.horizonsend.ion.server.command.qol.FixExtractorsCommand
 import net.horizonsend.ion.server.command.space.PlanetCommand
+import net.horizonsend.ion.server.command.space.SpaceGenCommand
 import net.horizonsend.ion.server.command.space.SpaceWorldCommand
 import net.horizonsend.ion.server.command.space.StarCommand
 import net.horizonsend.ion.server.command.starship.BlueprintCommand
@@ -66,7 +67,6 @@ import net.horizonsend.ion.server.features.customitems.commands.ConvertCommand
 import net.horizonsend.ion.server.features.misc.NewPlayerProtection
 import net.horizonsend.ion.server.features.sidebar.command.SidebarContactsCommand
 import net.horizonsend.ion.server.features.sidebar.command.SidebarWaypointsCommand
-import net.horizonsend.ion.server.features.space.generation.SpaceGenCommand
 import net.horizonsend.ion.server.features.waypoint.command.WaypointCommand
 
 val commands: List<SLCommand> = listOf(
