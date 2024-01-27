@@ -19,6 +19,7 @@ import net.horizonsend.ion.server.command.misc.BountyCommand
 import net.horizonsend.ion.server.command.misc.DyeCommand
 import net.horizonsend.ion.server.command.misc.GToggleCommand
 import net.horizonsend.ion.server.command.misc.GlobalGameRuleCommand
+import net.horizonsend.ion.server.command.misc.HelpCommand
 import net.horizonsend.ion.server.command.misc.IonBroadcastCommand
 import net.horizonsend.ion.server.command.misc.ListCommand
 import net.horizonsend.ion.server.command.misc.MultiblockCommand
@@ -152,5 +153,7 @@ val commands: List<SLCommand> = listOf(
 	BountyAdminCommand,
 
 	IonBroadcastCommand,
-	BlockCommand
+	BlockCommand,
+
+	HelpCommand
 )
